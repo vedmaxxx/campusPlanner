@@ -1,70 +1,140 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./styles/App.css";
 import SubjectSlotForm from "./components/SubjectSlotForm/SubjectSlotForm";
-import DaySlot from "./components/DaySlot/DaySlot";
+import WeekSlot from "./components/WeekSlot/WeekSlot";
+import { WeekSlotContext } from "./components/WeekSlotContext/WeekSlotContext";
 
 function App() {
-  const [daySlot, setDaySlot] = useState({
-    id: 1,
-    slots: [
-      {
-        id: 0,
-        number: 1,
-        day: "monday",
-        type: "practice",
-        discipline: "Программирование",
-        auditorium: "6-204",
-        group: "ПРО-430Б",
-      },
-      {
-        id: 1,
-        number: 2,
-        day: "monday",
-        type: "lecture",
-        discipline: "Философия",
-        auditorium: "6-202",
-        group: "ПРО-430Б",
-      },
-      {
-        id: 2,
-        number: 3,
-        day: "monday",
-        type: "practice",
-        discipline: "Программирование",
-        auditorium: "6-204",
-        group: "ПРО-430Б",
-      },
-    ],
-    date: new Date(),
-  });
+  const [week, setWeek] = useState([
+    {
+      id: 1,
+      day: "monday",
+      slots: [
+        {
+          id: 0,
+          number: 1,
+          day: "monday",
+          type: "practice",
+          discipline: "Программирование",
+          auditorium: "6-204",
+          group: "ПРО-430Б",
+        },
+        {
+          id: 1,
+          number: 2,
+          day: "monday",
+          type: "lecture",
+          discipline: "Философия",
+          auditorium: "6-202",
+          group: "ПРО-430Б",
+        },
+        {
+          id: 2,
+          number: 3,
+          day: "monday",
+          type: "practice",
+          discipline: "Программирование",
+          auditorium: "6-204",
+          group: "ПРО-430Б",
+        },
+      ],
+      date: new Date(2024, 3, 29),
+    },
+    {
+      id: 2,
+      slots: [
+        {
+          id: 5,
+          number: 1,
+          day: "monday",
+          type: "practice",
+          discipline: "Программирование",
+          auditorium: "6-204",
+          group: "ПРО-430Б",
+        },
+        {
+          id: 6,
+          number: 2,
+          day: "monday",
+          type: "lecture",
+          discipline: "Философия",
+          auditorium: "6-202",
+          group: "ПРО-430Б",
+        },
+        {
+          id: 7,
+          number: 3,
+          day: "monday",
+          type: "practice",
+          discipline: "Программирование",
+          auditorium: "6-204",
+          group: "ПРО-430Б",
+        },
+      ],
+      day: "tuesday",
+      date: new Date(2024, 3, 30),
+    },
+    {
+      id: 3,
+      slots: [],
+      day: "wednesday",
+      date: new Date(2024, 4, 1),
+    },
+    {
+      id: 4,
+      slots: [],
+      day: "thursday",
+      date: new Date(2024, 4, 2),
+    },
+    {
+      id: 5,
+      slots: [],
+      day: "friday",
+      date: new Date(2024, 4, 3),
+    },
+    {
+      id: 6,
+      slots: [],
+      day: "saturday",
+      date: new Date(2024, 4, 5),
+    },
+  ]);
 
-  function createSlot(slot) {
+  function createSlot(daySlot, slot) {
     if (slot.number === undefined || slot.number === -1) {
       alert("Введите номер пары");
       return;
     }
-
     for (let sl of daySlot.slots) {
       if (slot.number == sl.number) {
         alert("Данный слот занят");
         return;
       }
     }
-    const newSlots = [...daySlot.slots, slot];
-    console.log("Новый массив слотов после добавления:", newSlots);
-    setDaySlot({ ...daySlot, slots: newSlots });
+    const newDaySlot = { ...daySlot, slots: [...daySlot.slots, slot] };
+    const newWeek = week.map((dayslot) => {
+      if (dayslot.id === daySlot.id) {
+        return newDaySlot;
+      } else return dayslot;
+    });
+    console.log("newWeek: ", newWeek);
+    setWeek(newWeek);
   }
 
-  function deleteSlot(slot) {
+  function deleteSlot(daySlot, slot) {
     const newSlots = daySlot.slots.filter((sl) => sl.id !== slot.id);
-    setDaySlot({ ...daySlot, slots: newSlots });
+    const newDaySlot = { ...daySlot, slots: newSlots };
+    console.log(newDaySlot);
   }
 
   return (
     <div className="App">
       <div className="container">
-        <SubjectSlotForm createSlot={createSlot} />
-        <DaySlot daySlot={daySlot} deleteSlot={deleteSlot} />
+        <h2>Создать слот пары</h2>
+        <WeekSlotContext.Provider value={{ week, setWeek, deleteSlot }}>
+          <SubjectSlotForm createSlot={createSlot} />
+          <WeekSlot week={week} />
+        </WeekSlotContext.Provider>
       </div>
     </div>
   );

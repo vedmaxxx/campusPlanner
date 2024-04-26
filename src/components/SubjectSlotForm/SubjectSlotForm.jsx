@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Select from "../UI/Select/Select";
 import Button from "../UI/Button/Button";
+import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
 
 const SubjectSlotForm = ({ createSlot }) => {
-  const [number, setNumber] = useState(0);
-  const [type, setType] = useState("");
-  const [discipline, setDiscipline] = useState("");
-  const [auditorium, setAuditorium] = useState("");
-  const [day, setDay] = useState("");
+  const { week, setWeek } = useContext(WeekSlotContext);
+
+  const [number, setNumber] = useState(1);
+  const [type, setType] = useState("lecture");
+  const [discipline, setDiscipline] = useState("Программирование");
+  const [auditorium, setAuditorium] = useState("6-303");
+  const [day, setDay] = useState("monday");
 
   function addNewSlot(e) {
     e.preventDefault();
@@ -20,14 +23,15 @@ const SubjectSlotForm = ({ createSlot }) => {
       auditorium: auditorium,
       day: day,
     };
-    console.log(newSlot);
 
-    createSlot(newSlot);
+    const newDaySlot = week.find((daySlot) => daySlot.day == day);
+    console.log("Куда добавляем: ", newDaySlot);
+
+    createSlot(newDaySlot, newSlot);
   }
 
   return (
     <form action="" className="form_panel">
-      <h2>Создать слот пары</h2>
       <Select
         onChange={setNumber}
         defaultValue={"Номер пары"}

@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import styles from "./WeekSlot.module.css";
 import DaySlot from "../DaySlot/DaySlot";
+import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
 
-const WeekSlot = ({ daySlots }) => {
-  console.log("DaySlots:", daySlots);
+const WeekSlot = ({ week }) => {
   return (
-    <div className={styles.weekSlot_grid}>
-      {daySlots.map((daySlot) => (
+    <div className={styles.week_grid}>
+      {week.map((daySlot) => (
         <DaySlot key={daySlot.id} daySlot={daySlot} />
       ))}
     </div>

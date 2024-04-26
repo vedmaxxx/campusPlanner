@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import EmptySlot from "../EmptySlot/EmptySlot";
 import SubjectSlot from "../SubjectSlot/SubjectSlot";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,6 +6,7 @@ import styles from "./DaySlotItem.module.css";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 import { BREAK_TIME } from "../utils/consts";
 import SlotTime from "../SlotTime/SlotTime";
+import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
 
 function getBreakAfterSlot(slotNumber) {
   if (slotNumber % 2 == 0 && slotNumber < 7)
@@ -17,25 +18,23 @@ function getBreakAfterSlot(slotNumber) {
     );
 }
 
-const getSlot = (slot, deleteSlot) => {
-  if (slot.isEmpty) {
-    return <EmptySlot key={slot.number} />;
-  } else {
-    return (
-      <SubjectSlot
-        key={slot.number}
-        subjectSlot={slot}
-        deleteSlot={deleteSlot}
-      />
-    );
-  }
-};
+const DaySlotItem = ({ subjectSlot }) => {
+  const { deleteSlot } = useContext(WeekSlotContext);
 
-const DaySlotItem = ({ subjectSlot, deleteSlot }) => {
   return (
     <>
       <SlotTime key={Date.now()} number={subjectSlot.number} />
-      {getSlot(subjectSlot, deleteSlot)}
+
+      {subjectSlot.isEmpty ? (
+        <EmptySlot key={subjectSlot.number} />
+      ) : (
+        <SubjectSlot
+          key={subjectSlot.number}
+          subjectSlot={subjectSlot}
+          deleteSlot={deleteSlot}
+        />
+      )}
+
       {getBreakAfterSlot(subjectSlot.number)}
     </>
   );
