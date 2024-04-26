@@ -1,0 +1,37 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: rgb(245, 245, 245);
+}
+
+.App {
+  font-family: "Roboto", sans-serif;
+}
+
+.container {
+  max-width: 1300px;
+  margin: auto;
+}
+
+.make_schedule {
+  margin: auto;
+  padding: 20px;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.slots_grid {
+  display: grid;
+  grid-template-columns: repeat(6, 200px);
+  gap: 20px;
+}
+
+.form_panel {
+  margin: 20px 0;
+}

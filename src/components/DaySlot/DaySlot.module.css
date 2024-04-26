@@ -1,0 +1,21 @@
+.dayslot {
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.day {
+  font-size: 18px;
+  font-weight: 400;
+  text-align: center;
+}
+.day::first-letter {
+  text-transform: uppercase;
+}
+
+.date {
+  font-size: 20px;
+  text-align: center;
+  font-weight: 400;
+  margin: 10px 0;
+}

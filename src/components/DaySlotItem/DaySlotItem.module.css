@@ -1,0 +1,13 @@
+.break_time {
+  color: gray;
+}
+
+.break {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background-color: rgb(255, 255, 255);
+  border-radius: 5px;
+  padding: 10px;
+}

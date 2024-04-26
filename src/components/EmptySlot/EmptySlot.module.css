@@ -1,0 +1,7 @@
+.empty {
+  margin: 20px 0;
+  background-color: rgb(255, 255, 255);
+  border-left: 4px solid gray;
+  padding: 10px;
+  /* text-align: center; */
+}
