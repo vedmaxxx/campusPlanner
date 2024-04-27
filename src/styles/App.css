@@ -32,6 +32,8 @@ body {
   gap: 20px;
 }
 
-.form_panel {
-  margin: 20px 0;
+.week {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
 }

@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import Select from "../UI/Select/Select";
 import Button from "../UI/Button/Button";
 import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
+import styles from "./SubjectSlotForm.module.css";
 
 const SubjectSlotForm = ({ createSlot }) => {
   const { week } = useContext(WeekSlotContext);
@@ -25,13 +26,27 @@ const SubjectSlotForm = ({ createSlot }) => {
     };
 
     const newDaySlot = week.find((daySlot) => daySlot.day == day);
-    console.log("Куда добавляем: ", newDaySlot);
 
     createSlot(newDaySlot, newSlot);
+    console.log("Слот успешно добавлен!");
   }
 
   return (
-    <form action="" className="form_panel">
+    <form action="" className={styles.form}>
+      <label>День недели</label>
+      <Select
+        onChange={setDay}
+        defaultValue={"День"}
+        options={[
+          { value: "monday", name: "Пн" },
+          { value: "tuesday", name: "Вт" },
+          { value: "wednesday", name: "Ср" },
+          { value: "thursday", name: "Чт" },
+          { value: "friday", name: "Пт" },
+          { value: "saturday", name: "Сб" },
+        ]}
+      />
+      <label>Номер пары</label>
       <Select
         onChange={setNumber}
         defaultValue={"Номер пары"}
@@ -46,6 +61,8 @@ const SubjectSlotForm = ({ createSlot }) => {
           { value: 8, name: 8 },
         ]}
       />
+      <label>Вид занятия</label>
+
       <Select
         onChange={setType}
         defaultValue={"Тип занятия"}
@@ -55,6 +72,8 @@ const SubjectSlotForm = ({ createSlot }) => {
           { value: "laboratory", name: "Лабораторная" },
         ]}
       />
+      <label>Дисциплина</label>
+
       <Select
         onChange={setDiscipline}
         defaultValue={"Дисциплина"}
@@ -67,6 +86,8 @@ const SubjectSlotForm = ({ createSlot }) => {
           },
         ]}
       />
+      <label>Аудитория</label>
+
       <Select
         onChange={setAuditorium}
         defaultValue={"Аудитория"}
@@ -79,18 +100,7 @@ const SubjectSlotForm = ({ createSlot }) => {
           },
         ]}
       />
-      <Select
-        onChange={setDay}
-        defaultValue={"День"}
-        options={[
-          { value: "monday", name: "Пн" },
-          { value: "tuesday", name: "Вт" },
-          { value: "wednesday", name: "Ср" },
-          { value: "thursday", name: "Чт" },
-          { value: "friday", name: "Пт" },
-          { value: "saturday", name: "Сб" },
-        ]}
-      />
+
       <Button onClick={addNewSlot}>Создать слот</Button>
     </form>
   );

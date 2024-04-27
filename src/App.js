@@ -5,6 +5,7 @@ import WeekSlot from "./components/WeekSlot/WeekSlot";
 import { WeekSlotContext } from "./components/WeekSlotContext/WeekSlotContext";
 import Modal from "./components/UI/Modal/Modal";
 import Button from "./components/UI/Button/Button";
+import NavBar from "./components/NavBar/NavBar";
 
 function App() {
   const [week, setWeek] = useState([
@@ -137,15 +138,13 @@ function App() {
 
   return (
     <div className="App">
+      <NavBar>
+        <Button onClick={() => setModal(true)}>Создать слот</Button>
+      </NavBar>
+
       <div className="container">
-        <Button
-          onClick={() => {
-            setModal(true);
-          }}
-        >
-          Создать слот
-        </Button>
         <WeekSlotContext.Provider value={{ week, setWeek, deleteSlot }}>
+          <div className="week">4 неделя</div>
           <Modal visible={modal} setVisible={setModal}>
             <SubjectSlotForm createSlot={createSlot} />
           </Modal>
