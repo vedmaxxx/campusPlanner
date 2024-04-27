@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./styles/App.css";
 import SubjectSlotForm from "./components/SubjectSlotForm/SubjectSlotForm";
 import WeekSlot from "./components/WeekSlot/WeekSlot";
@@ -113,7 +113,7 @@ function App() {
     }
     const newDaySlot = { ...daySlot, slots: [...daySlot.slots, slot] };
     const newWeek = week.map((dayslot) => {
-      if (dayslot.id === daySlot.id) {
+      if (dayslot.id === newDaySlot.id) {
         return newDaySlot;
       } else return dayslot;
     });
@@ -121,10 +121,15 @@ function App() {
     setWeek(newWeek);
   }
 
-  function deleteSlot(daySlot, slot) {
-    const newSlots = daySlot.slots.filter((sl) => sl.id !== slot.id);
-    const newDaySlot = { ...daySlot, slots: newSlots };
-    console.log(newDaySlot);
+  function deleteSlot(dayslot, slot) {
+    const newSlots = dayslot.slots.filter((sl) => sl.id !== slot.id);
+    const newDaySlot = { ...dayslot, slots: newSlots };
+    const newWeek = week.map((dayslot) => {
+      if (dayslot.id === newDaySlot.id) {
+        return newDaySlot;
+      } else return dayslot;
+    });
+    setWeek(newWeek);
   }
 
   return (

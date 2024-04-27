@@ -6,7 +6,7 @@ import EditSlotForm from "../EditSlotForm/EditSlotForm";
 import DeleteBtn from "../UI/Button/DeleteBtn";
 import EditBtn from "../UI/Button/EditBtn";
 
-const SubjectSlot = ({ subjectSlot, deleteSlot }) => {
+const SubjectSlot = ({ subjectSlot, deleteSlot, date }) => {
   const [modalIsVisible, setModalIsVisible] = useState(false);
   const [slot, setSlot] = useState(subjectSlot);
 
@@ -24,7 +24,7 @@ const SubjectSlot = ({ subjectSlot, deleteSlot }) => {
         <div>Преподаватель</div>
         <div className={styles.footer}>
           <EditBtn />
-          <DeleteBtn deleteSlot={deleteSlot} slot={slot} />
+          <DeleteBtn deleteSlot={deleteSlot} slot={slot} date={date} />
         </div>
       </div>
     </div>

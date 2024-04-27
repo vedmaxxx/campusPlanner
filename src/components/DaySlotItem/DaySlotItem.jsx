@@ -12,27 +12,30 @@ function getBreakAfterSlot(slotNumber) {
   if (slotNumber % 2 == 0 && slotNumber < 7)
     return (
       <div className={styles.break}>
-        <FontAwesomeIcon icon={faClock} size="sm" />
+        <FontAwesomeIcon styles={{ color: "gray" }} icon={faClock} size="sm" />
         <div className={styles.break_time}>{BREAK_TIME} мин</div>
       </div>
     );
 }
 
-const DaySlotItem = ({ subjectSlot }) => {
+const DaySlotItem = ({ subjectSlot, date }) => {
   const { deleteSlot } = useContext(WeekSlotContext);
 
   return (
     <>
-      <SlotTime key={Date.now()} number={subjectSlot.number} />
-
       {subjectSlot.isEmpty ? (
         <EmptySlot key={subjectSlot.number} />
       ) : (
-        <SubjectSlot
-          key={subjectSlot.number}
-          subjectSlot={subjectSlot}
-          deleteSlot={deleteSlot}
-        />
+        <>
+          <SlotTime key={Date.now()} number={subjectSlot.number} />
+
+          <SubjectSlot
+            key={subjectSlot.number}
+            subjectSlot={subjectSlot}
+            deleteSlot={deleteSlot}
+            date={date}
+          />
+        </>
       )}
 
       {getBreakAfterSlot(subjectSlot.number)}

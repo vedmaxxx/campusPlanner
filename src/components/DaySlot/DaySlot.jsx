@@ -25,7 +25,7 @@ const DaySlot = ({ daySlot }) => {
       <h2 className={styles.date}>{dataTransform(daySlot.date)}</h2>
 
       {createDaySlot(daySlot.slots).map((slot) => (
-        <DaySlotItem key={slot.id} subjectSlot={slot} />
+        <DaySlotItem key={slot.id} subjectSlot={slot} date={daySlot.date} />
       ))}
     </div>
   );
