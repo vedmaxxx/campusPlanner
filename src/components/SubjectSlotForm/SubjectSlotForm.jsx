@@ -4,7 +4,7 @@ import Button from "../UI/Button/Button";
 import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
 
 const SubjectSlotForm = ({ createSlot }) => {
-  const { week, setWeek } = useContext(WeekSlotContext);
+  const { week } = useContext(WeekSlotContext);
 
   const [number, setNumber] = useState(1);
   const [type, setType] = useState("lecture");

@@ -3,6 +3,8 @@ import "./styles/App.css";
 import SubjectSlotForm from "./components/SubjectSlotForm/SubjectSlotForm";
 import WeekSlot from "./components/WeekSlot/WeekSlot";
 import { WeekSlotContext } from "./components/WeekSlotContext/WeekSlotContext";
+import Modal from "./components/UI/Modal/Modal";
+import Button from "./components/UI/Button/Button";
 
 function App() {
   const [week, setWeek] = useState([
@@ -99,6 +101,7 @@ function App() {
       date: new Date(2024, 4, 5),
     },
   ]);
+  const [modal, setModal] = useState(false);
 
   function createSlot(daySlot, slot) {
     if (slot.number === undefined || slot.number === -1) {
@@ -135,9 +138,17 @@ function App() {
   return (
     <div className="App">
       <div className="container">
-        <h2>Создать слот пары</h2>
+        <Button
+          onClick={() => {
+            setModal(true);
+          }}
+        >
+          Создать слот
+        </Button>
         <WeekSlotContext.Provider value={{ week, setWeek, deleteSlot }}>
-          <SubjectSlotForm createSlot={createSlot} />
+          <Modal visible={modal} setVisible={setModal}>
+            <SubjectSlotForm createSlot={createSlot} />
+          </Modal>
           <WeekSlot week={week} />
         </WeekSlotContext.Provider>
       </div>
