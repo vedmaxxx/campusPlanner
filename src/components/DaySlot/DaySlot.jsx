@@ -1,10 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import styles from "./DaySlot.module.css";
 import { dataTransform, getDayWeek } from "../utils/date";
 import { MAX_SLOTS_PER_DAY } from "../utils/consts";
 import DaySlotItem from "../DaySlotItem/DaySlotItem";
-import SubjectSlot from "../SubjectSlot/SubjectSlot";
-import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
 
 function createDaySlot(slots) {
   const daySlotView = [];

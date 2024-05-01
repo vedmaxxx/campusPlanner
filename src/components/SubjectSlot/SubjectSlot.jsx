@@ -1,30 +1,33 @@
-import React, { useState } from "react";
-import styles from "./SubjectSlot.module.css";
+import React, { useContext } from "react";
 import { SUBJECTS_TYPES } from "../utils/consts";
-import Modal from "../UI/Modal/Modal";
-import EditSlotForm from "../EditSlotForm/EditSlotForm";
-import DeleteBtn from "../UI/Button/DeleteBtn";
-import EditBtn from "../UI/Button/EditBtn";
+import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
+import { faPenToSquare, faTrashAlt } from "@fortawesome/free-regular-svg-icons";
+import IconBtn from "../UI/IconBtn/IconBtn";
+import styles from "./SubjectSlot.module.css";
+import cx from "classnames";
 
-const SubjectSlot = ({ subjectSlot, deleteSlot, date }) => {
-  const [modalIsVisible, setModalIsVisible] = useState(false);
-  const [slot, setSlot] = useState(subjectSlot);
+const SubjectSlot = ({ subjectSlot, date }) => {
+  const { selectForDelete } = useContext(WeekSlotContext);
 
   return (
     <div className={styles.container}>
-      <Modal visible={modalIsVisible} setVisible={setModalIsVisible}>
-        <EditSlotForm slot={slot} setSlot={setSlot} />
-      </Modal>
-      <div className={[styles.inner, styles[slot.type]].join(" ")}>
-        <h3 className={[styles.type, styles[slot.type]].join(" ")}>
-          {slot.number}. {SUBJECTS_TYPES[slot.type]}
+      <div className={cx(styles.inner, styles[subjectSlot.type])}>
+        <h3 className={cx(styles.type, styles[subjectSlot.type])}>
+          {subjectSlot.number}. {SUBJECTS_TYPES[subjectSlot.type]}
         </h3>
-        <div>{slot.discipline}</div>
-        <div>{slot.auditorium}</div>
+        <div>{subjectSlot.discipline}</div>
+        <div>{subjectSlot.auditorium}</div>
         <div>Преподаватель</div>
         <div className={styles.footer}>
-          <EditBtn />
-          <DeleteBtn deleteSlot={deleteSlot} slot={slot} date={date} />
+          <IconBtn icon={faPenToSquare} style={{ color: "blue" }} />
+          <IconBtn
+            onClick={() => {
+              console.log("Нажали на кнопку удаления слота: ", subjectSlot);
+              selectForDelete(subjectSlot.id, date);
+            }}
+            icon={faTrashAlt}
+            style={{ color: "red" }}
+          />
         </div>
       </div>
     </div>

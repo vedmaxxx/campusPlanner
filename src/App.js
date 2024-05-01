@@ -102,7 +102,11 @@ function App() {
       date: new Date(2024, 4, 5),
     },
   ]);
-  const [modal, setModal] = useState(false);
+  const [createModal, setCreateModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+
+  const [daySlotDate, setDaySlotDate] = useState(null);
+  const [deletingSlotId, setDeletingSlotId] = useState(-1);
 
   function createSlot(daySlot, slot) {
     if (slot.number === undefined || slot.number === -1) {
@@ -125,8 +129,8 @@ function App() {
     setWeek(newWeek);
   }
 
-  function deleteSlot(dayslot, slot) {
-    const newSlots = dayslot.slots.filter((sl) => sl.id !== slot.id);
+  function deleteSlot(dayslot, slot_id) {
+    const newSlots = dayslot.slots.filter((sl) => sl.id !== slot_id);
     const newDaySlot = { ...dayslot, slots: newSlots };
     const newWeek = week.map((dayslot) => {
       if (dayslot.id === newDaySlot.id) {
@@ -136,16 +140,39 @@ function App() {
     setWeek(newWeek);
   }
 
+  const selectForDelete = (slot_id, date) => {
+    setDaySlotDate(date);
+    setDeletingSlotId(slot_id);
+    setDeleteModal(true);
+  };
+
+  function deleteBtnHandler() {
+    let dayslot = week.find((dayslot) => dayslot.date == daySlotDate);
+    deleteSlot(dayslot, deletingSlotId);
+    setDeleteModal(false);
+  }
+
   return (
     <div className="App">
       <NavBar>
-        <Button onClick={() => setModal(true)}>Создать слот</Button>
+        <Button mix={{ red: true }} onClick={() => setCreateModal(true)}>
+          Создать слот
+        </Button>
       </NavBar>
 
       <div className="container">
-        <WeekSlotContext.Provider value={{ week, setWeek, deleteSlot }}>
+        <WeekSlotContext.Provider value={{ selectForDelete }}>
           <div className="week">4 неделя</div>
-          <Modal visible={modal} setVisible={setModal}>
+          <Modal visible={deleteModal} setVisible={setDeleteModal}>
+            <div className="modal_container">
+              <div>Вы уверены, что хотите удалить пару?</div>
+              <div className="modal_container__btns">
+                <Button onClick={deleteBtnHandler}>Да</Button>
+                <Button onClick={() => setDeleteModal(false)}>Нет</Button>
+              </div>
+            </div>
+          </Modal>
+          <Modal visible={createModal} setVisible={setCreateModal}>
             <SubjectSlotForm createSlot={createSlot} />
           </Modal>
           <WeekSlot week={week} />

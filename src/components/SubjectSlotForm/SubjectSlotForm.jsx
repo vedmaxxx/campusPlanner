@@ -33,6 +33,7 @@ const SubjectSlotForm = ({ createSlot }) => {
 
   return (
     <form action="" className={styles.form}>
+      <h3 className={styles.title}>Создание слота</h3>
       <label>День недели</label>
       <Select
         onChange={setDay}
@@ -101,7 +102,9 @@ const SubjectSlotForm = ({ createSlot }) => {
         ]}
       />
 
-      <Button onClick={addNewSlot}>Создать слот</Button>
+      <Button mix={{ red: true }} onClick={addNewSlot}>
+        Создать слот
+      </Button>
     </form>
   );
 };
