@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import styles from "./WeekSlot.module.css";
 import DaySlot from "../DaySlot/DaySlot";
-import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
 
 const WeekSlot = ({ week }) => {
   return (

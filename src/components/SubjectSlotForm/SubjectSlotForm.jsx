@@ -12,6 +12,8 @@ const SubjectSlotForm = ({ createSlot }) => {
   const [discipline, setDiscipline] = useState("Программирование");
   const [auditorium, setAuditorium] = useState("6-303");
   const [day, setDay] = useState("monday");
+  const [teacher, setTeacher] = useState("Иванов И.И.");
+  const [group, setGroup] = useState("ПРО-430Б");
 
   function addNewSlot(e) {
     e.preventDefault();
@@ -23,21 +25,21 @@ const SubjectSlotForm = ({ createSlot }) => {
       discipline: discipline,
       auditorium: auditorium,
       day: day,
+      teacher: teacher,
+      group: group,
     };
 
-    const newDaySlot = week.find((daySlot) => daySlot.day == day);
-
+    const newDaySlot = week.find((daySlot) => daySlot.day === day);
     createSlot(newDaySlot, newSlot);
-    console.log("Слот успешно добавлен!");
   }
 
   return (
-    <form action="" className={styles.form}>
+    <form className={styles.form}>
       <h3 className={styles.title}>Создание слота</h3>
       <label>День недели</label>
       <Select
         onChange={setDay}
-        defaultValue={"День"}
+        defaultValue={"День недели"}
         options={[
           { value: "monday", name: "Пн" },
           { value: "tuesday", name: "Вт" },
@@ -47,6 +49,7 @@ const SubjectSlotForm = ({ createSlot }) => {
           { value: "saturday", name: "Сб" },
         ]}
       />
+
       <label>Номер пары</label>
       <Select
         onChange={setNumber}
@@ -62,8 +65,8 @@ const SubjectSlotForm = ({ createSlot }) => {
           { value: 8, name: 8 },
         ]}
       />
-      <label>Вид занятия</label>
 
+      <label>Вид занятия</label>
       <Select
         onChange={setType}
         defaultValue={"Тип занятия"}
@@ -73,8 +76,8 @@ const SubjectSlotForm = ({ createSlot }) => {
           { value: "laboratory", name: "Лабораторная" },
         ]}
       />
-      <label>Дисциплина</label>
 
+      <label>Дисциплина</label>
       <Select
         onChange={setDiscipline}
         defaultValue={"Дисциплина"}
@@ -87,24 +90,40 @@ const SubjectSlotForm = ({ createSlot }) => {
           },
         ]}
       />
-      <label>Аудитория</label>
 
+      <label>Аудитория</label>
       <Select
         onChange={setAuditorium}
         defaultValue={"Аудитория"}
         options={[
-          { value: "6-201", name: "6-201" },
           { value: "6-202", name: "6-202" },
-          {
-            value: "6-203",
-            name: "6-203",
-          },
+          { value: "6-203", name: "6-203" },
+          { value: "6-204", name: "6-204" },
         ]}
       />
 
-      <Button mix={{ red: true }} onClick={addNewSlot}>
-        Создать слот
-      </Button>
+      <label>Преподаватель</label>
+      <Select
+        onChange={setTeacher}
+        defaultValue={"Преподаватель"}
+        options={[
+          { value: "Иванов И.В.", name: "Иванов И. В." },
+          { value: "Васильев В.В.", name: "Васильев В.В." },
+          { value: "Грачев Г.Г.", name: "Грачев Г.Г." },
+        ]}
+      />
+
+      <label>Группа</label>
+      <Select
+        onChange={setGroup}
+        defaultValue={"Группа"}
+        options={[
+          { value: "ПРО-430Б", name: "ПРО-430Б" },
+          { value: "ПРО-431Б", name: "ПРО-431Б" },
+          { value: "ПРО-432Б", name: "ПРО-432Б" },
+        ]}
+      />
+      <Button onClick={addNewSlot}>Создать слот</Button>
     </form>
   );
 };

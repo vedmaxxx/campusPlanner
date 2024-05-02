@@ -1,7 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./IconBtn.module.css";
-import cx from "classnames";
 
 const IconBtn = ({ icon, size, style, ...props }) => {
   return (

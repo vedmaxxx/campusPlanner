@@ -17,12 +17,14 @@ const SubjectSlot = ({ subjectSlot, date }) => {
         </h3>
         <div>{subjectSlot.discipline}</div>
         <div>{subjectSlot.auditorium}</div>
-        <div>Преподаватель</div>
+        <div>{subjectSlot.teacher}</div>
+        <div>{subjectSlot.group}</div>
+
         <div className={styles.footer}>
           <IconBtn icon={faPenToSquare} style={{ color: "blue" }} />
           <IconBtn
             onClick={() => {
-              console.log("Нажали на кнопку удаления слота: ", subjectSlot);
+              console.log("Удаляемый слот: ", subjectSlot);
               selectForDelete(subjectSlot.id, date);
             }}
             icon={faTrashAlt}

@@ -12,6 +12,7 @@ function App() {
     {
       id: 1,
       day: "monday",
+      number: 1,
       slots: [
         {
           id: 0,
@@ -21,6 +22,7 @@ function App() {
           discipline: "Программирование",
           auditorium: "6-204",
           group: "ПРО-430Б",
+          teacher: "",
         },
         {
           id: 1,
@@ -30,6 +32,7 @@ function App() {
           discipline: "Философия",
           auditorium: "6-202",
           group: "ПРО-430Б",
+          teacher: "",
         },
         {
           id: 2,
@@ -39,6 +42,7 @@ function App() {
           discipline: "Программирование",
           auditorium: "6-204",
           group: "ПРО-430Б",
+          teacher: "",
         },
       ],
       date: new Date(2024, 3, 29),
@@ -54,6 +58,7 @@ function App() {
           discipline: "Программирование",
           auditorium: "6-204",
           group: "ПРО-430Б",
+          teacher: "",
         },
         {
           id: 6,
@@ -63,6 +68,7 @@ function App() {
           discipline: "Философия",
           auditorium: "6-202",
           group: "ПРО-430Б",
+          teacher: "",
         },
         {
           id: 7,
@@ -72,6 +78,7 @@ function App() {
           discipline: "Программирование",
           auditorium: "6-204",
           group: "ПРО-430Б",
+          teacher: "",
         },
       ],
       day: "tuesday",
@@ -161,7 +168,7 @@ function App() {
       </NavBar>
 
       <div className="container">
-        <WeekSlotContext.Provider value={{ selectForDelete }}>
+        <WeekSlotContext.Provider value={{ week, selectForDelete }}>
           <div className="week">4 неделя</div>
           <Modal visible={deleteModal} setVisible={setDeleteModal}>
             <div className="modal_container">
@@ -174,6 +181,7 @@ function App() {
           </Modal>
           <Modal visible={createModal} setVisible={setCreateModal}>
             <SubjectSlotForm createSlot={createSlot} />
+            <Button onClick={() => setCreateModal(false)}>Закрыть</Button>
           </Modal>
           <WeekSlot week={week} />
         </WeekSlotContext.Provider>

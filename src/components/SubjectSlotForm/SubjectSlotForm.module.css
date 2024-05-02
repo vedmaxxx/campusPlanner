@@ -16,3 +16,9 @@
   font-weight: bold;
   margin-bottom: 20px;
 }
+
+.btns {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
