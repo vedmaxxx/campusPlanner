@@ -8,6 +8,118 @@ import Button from "./components/UI/Button/Button";
 import NavBar from "./components/NavBar/NavBar";
 
 function App() {
+  const [scheduleGroup, setScheduleGroup] = useState({
+    id: Date.now(),
+    semester: 1,
+    group: "",
+    weeks: [
+      {
+        id: 1,
+        number: 1,
+        days: [
+          {
+            id: 1,
+            day: "monday",
+            number: 1,
+            slots: [
+              {
+                id: 0,
+                number: 1,
+                day: "monday",
+                type: "practice",
+                discipline: "Программирование",
+                auditorium: "6-204",
+                group: "ПРО-430Б",
+                teacher: "",
+              },
+              {
+                id: 1,
+                number: 2,
+                day: "monday",
+                type: "lecture",
+                discipline: "Философия",
+                auditorium: "6-202",
+                group: "ПРО-430Б",
+                teacher: "",
+              },
+              {
+                id: 2,
+                number: 3,
+                day: "monday",
+                type: "practice",
+                discipline: "Программирование",
+                auditorium: "6-204",
+                group: "ПРО-430Б",
+                teacher: "",
+              },
+            ],
+            date: new Date(2024, 3, 29),
+          },
+          {
+            id: 2,
+            slots: [
+              {
+                id: 5,
+                number: 1,
+                day: "monday",
+                type: "practice",
+                discipline: "Программирование",
+                auditorium: "6-204",
+                group: "ПРО-430Б",
+                teacher: "",
+              },
+              {
+                id: 6,
+                number: 2,
+                day: "monday",
+                type: "lecture",
+                discipline: "Философия",
+                auditorium: "6-202",
+                group: "ПРО-430Б",
+                teacher: "",
+              },
+              {
+                id: 7,
+                number: 3,
+                day: "monday",
+                type: "practice",
+                discipline: "Программирование",
+                auditorium: "6-204",
+                group: "ПРО-430Б",
+                teacher: "",
+              },
+            ],
+            day: "tuesday",
+            date: new Date(2024, 3, 30),
+          },
+          {
+            id: 3,
+            slots: [],
+            day: "wednesday",
+            date: new Date(2024, 4, 1),
+          },
+          {
+            id: 4,
+            slots: [],
+            day: "thursday",
+            date: new Date(2024, 4, 2),
+          },
+          {
+            id: 5,
+            slots: [],
+            day: "friday",
+            date: new Date(2024, 4, 3),
+          },
+          {
+            id: 6,
+            slots: [],
+            day: "saturday",
+            date: new Date(2024, 4, 5),
+          },
+        ],
+      },
+    ],
+  });
   const [week, setWeek] = useState([
     {
       id: 1,
