@@ -5,7 +5,7 @@ import DaySlot from "../DaySlot/DaySlot";
 const WeekSlot = ({ week }) => {
   return (
     <div className={styles.week_grid}>
-      {week.map((daySlot) => (
+      {week.dayslots.map((daySlot) => (
         <DaySlot key={daySlot.id} daySlot={daySlot} />
       ))}
     </div>
