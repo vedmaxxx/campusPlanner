@@ -7,12 +7,14 @@ import Modal from "./components/UI/Modal/Modal";
 import Button from "./components/UI/Button/Button";
 import NavBar from "./components/NavBar/NavBar";
 import WeekBar from "./components/WeekBar/WeekBar";
+import ModalConfirm from "./components/UI/ModalConfirm/ModalConfirm";
 
 function App() {
   const [scheduleGroup, setScheduleGroup] = useState({
     id: Date.now(),
     semester: 1,
     group: "ПРО-430Б",
+    weeksNumber: 20,
     weeks: [
       {
         id: 1,
@@ -216,7 +218,7 @@ function App() {
       },
     ],
   });
-  const [maxWeeks, setMaxWeeks] = useState(scheduleGroup.weeks.length);
+  const [maxWeeks, setMaxWeeks] = useState(scheduleGroup.weeksNumber);
   const [currentWeekNumber, setCurrentWeekNumber] = useState(1);
   const [currentWeek, setCurrentWeek] = useState(
     scheduleGroup.weeks[currentWeekNumber]
@@ -224,21 +226,15 @@ function App() {
 
   const [createModal, setCreateModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
-  const [daySlotDate, setDaySlotDate] = useState(null);
-  const [deletingSlotId, setDeletingSlotId] = useState(-1);
 
-  function createSlot(daySlot, slot) {
-    if (slot.number === undefined || slot.number === -1) {
-      alert("Введите номер пары");
-      return;
-    }
-    for (let sl of daySlot.slots) {
-      if (slot.number == sl.number) {
-        alert("Данный слот занят");
-        return;
-      }
-    }
-    const newDaySlot = { ...daySlot, slots: [...daySlot.slots, slot] };
+  // дата редактируемого daySlot
+  const [daySlotDate, setDaySlotDate] = useState(null);
+  // дата удаляемого subjectSlot
+  const [deletingSubjectSlotId, setDeletingSubjectSlotId] = useState(-1);
+
+  // помещает исправленные слоты в расписание группы
+  function updateSubjectSlotsInScheduleGroup(daySlot, slots) {
+    const newDaySlot = { ...daySlot, slots: slots };
     const newDaySlots = currentWeek.dayslots.map((dayslot) => {
       if (dayslot.id === newDaySlot.id) {
         return newDaySlot;
@@ -254,43 +250,49 @@ function App() {
     setScheduleGroup(newScheduleGroup);
   }
 
-  function deleteSlot(dayslot, slot_id) {
-    const newSlots = dayslot.slots.filter((sl) => sl.id !== slot_id);
-    const newDaySlot = { ...dayslot, slots: newSlots };
-    const newDaySlots = currentWeek.dayslots.map((dayslot) => {
-      if (dayslot.id === newDaySlot.id) {
-        return newDaySlot;
-      } else return dayslot;
-    });
-    const newCurrentWeek = { ...currentWeek, dayslots: newDaySlots };
-    setCurrentWeek(newCurrentWeek);
+  function createSubjectSlot(dayslot, slot) {
+    if (slot.number === undefined || slot.number === -1) {
+      alert("Введите номер пары");
+      return;
+    }
+    for (let sl of dayslot.slots) {
+      if (slot.number == sl.number) {
+        alert("Данный слот занят");
+        return;
+      }
+    }
+    const newSlots = [...dayslot.slots, slot];
+    updateSubjectSlotsInScheduleGroup(dayslot, newSlots);
   }
-
-  const selectForDelete = (slot_id, date) => {
+  function deleteSubjectSlot(dayslot, slot_id) {
+    const newSlots = dayslot.slots.filter((sl) => sl.id !== slot_id);
+    updateSubjectSlotsInScheduleGroup(dayslot, newSlots);
+  }
+  function selectForDelete(slot_id, date) {
     setDaySlotDate(date);
-    setDeletingSlotId(slot_id);
+    setDeletingSubjectSlotId(slot_id);
     setDeleteModal(true);
-  };
+  }
 
   function deleteBtnHandler() {
     let dayslot = currentWeek.dayslots.find(
       (dayslot) => dayslot.date == daySlotDate
     );
-    deleteSlot(dayslot, deletingSlotId);
+    deleteSubjectSlot(dayslot, deletingSubjectSlotId);
     setDeleteModal(false);
   }
 
   useEffect(() => {
-    if (scheduleGroup.weeks.length < currentWeekNumber) return;
+    if (scheduleGroup.weeks.length < currentWeekNumber) {
+      setCurrentWeek([]);
+    }
     setCurrentWeek(scheduleGroup.weeks[currentWeekNumber - 1]);
   }, [currentWeekNumber, scheduleGroup]);
 
   return (
     <div className="App">
       <NavBar>
-        <Button mix={{ red: true }} onClick={() => setCreateModal(true)}>
-          Создать слот
-        </Button>
+        <Button onClick={() => setCreateModal(true)}>Создать слот</Button>
       </NavBar>
       <div className="container">
         <WeekSlotContext.Provider
@@ -301,20 +303,18 @@ function App() {
             number={currentWeekNumber}
             setNumber={setCurrentWeekNumber}
           />
+          <WeekSlot week={currentWeek} />
+
           <Modal visible={deleteModal} setVisible={setDeleteModal}>
-            <div className="modal_container">
-              <div>Вы уверены, что хотите удалить пару?</div>
-              <div className="modal_container__btns">
-                <Button onClick={deleteBtnHandler}>Да</Button>
-                <Button onClick={() => setDeleteModal(false)}>Нет</Button>
-              </div>
-            </div>
+            <ModalConfirm
+              onSubmit={deleteBtnHandler}
+              onCancel={() => setDeleteModal(false)}
+            />
           </Modal>
           <Modal visible={createModal} setVisible={setCreateModal}>
-            <SubjectSlotForm createSlot={createSlot} />
+            <SubjectSlotForm createSlot={createSubjectSlot} />
             <Button onClick={() => setCreateModal(false)}>Закрыть</Button>
           </Modal>
-          <WeekSlot week={currentWeek} />
         </WeekSlotContext.Provider>
       </div>
     </div>
