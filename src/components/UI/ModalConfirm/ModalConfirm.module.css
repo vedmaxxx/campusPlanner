@@ -1,0 +1,11 @@
+.confirm_container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.confirm_bnts {
+  justify-content: end;
+  display: flex;
+  gap: 10px;
+}

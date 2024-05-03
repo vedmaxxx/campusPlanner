@@ -29,7 +29,7 @@ const SubjectSlotForm = ({ createSlot }) => {
       group: group,
     };
 
-    const newDaySlot = week.find((daySlot) => daySlot.day === day);
+    const newDaySlot = week.dayslots.find((daySlot) => daySlot.day === day);
     createSlot(newDaySlot, newSlot);
   }
 

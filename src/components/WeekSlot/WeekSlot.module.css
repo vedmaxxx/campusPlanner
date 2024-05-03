@@ -3,3 +3,9 @@
   grid-template-columns: repeat(6, 1fr);
   gap: 20px;
 }
+
+.empty {
+  margin-top: 40px;
+  font-size: 20px;
+  text-align: center;
+}

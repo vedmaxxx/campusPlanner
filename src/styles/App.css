@@ -13,7 +13,7 @@ body {
 }
 
 .container {
-  max-width: 1300px;
+  max-width: 1400px;
   margin: auto;
 }
 
@@ -30,24 +30,6 @@ body {
   display: grid;
   grid-template-columns: repeat(6, 200px);
   gap: 20px;
-}
-
-.week {
-  text-align: center;
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.modal_container {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-
-.modal_container__btns {
-  justify-content: end;
-  display: flex;
-  gap: 10px;
 }
 
 .btn {
