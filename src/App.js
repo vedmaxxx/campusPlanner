@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./styles/App.css";
 import SubjectSlotForm from "./components/SubjectSlotForm/SubjectSlotForm";
 import WeekSlot from "./components/WeekSlot/WeekSlot";
@@ -115,14 +115,112 @@ function App() {
             id: 6,
             slots: [],
             day: "saturday",
-            date: new Date(2024, 4, 5),
+            date: new Date(2024, 4, 4),
+          },
+        ],
+      },
+      {
+        id: 2,
+        number: 2,
+        dayslots: [
+          {
+            id: 1,
+            day: "monday",
+            number: 1,
+            slots: [
+              {
+                id: 1,
+                number: 2,
+                day: "monday",
+                type: "lecture",
+                discipline: "Философия",
+                auditorium: "6-202",
+                group: "ПРО-430Б",
+                teacher: "",
+              },
+              {
+                id: 2,
+                number: 3,
+                day: "monday",
+                type: "practice",
+                discipline: "Программирование",
+                auditorium: "6-204",
+                group: "ПРО-430Б",
+                teacher: "",
+              },
+            ],
+            date: new Date(2024, 4, 6),
+          },
+          {
+            id: 2,
+            slots: [
+              {
+                id: 5,
+                number: 1,
+                day: "monday",
+                type: "practice",
+                discipline: "Программирование",
+                auditorium: "6-204",
+                group: "ПРО-430Б",
+                teacher: "",
+              },
+              {
+                id: 6,
+                number: 2,
+                day: "monday",
+                type: "lecture",
+                discipline: "Философия",
+                auditorium: "6-202",
+                group: "ПРО-430Б",
+                teacher: "",
+              },
+              {
+                id: 7,
+                number: 3,
+                day: "monday",
+                type: "practice",
+                discipline: "Программирование",
+                auditorium: "6-204",
+                group: "ПРО-430Б",
+                teacher: "",
+              },
+            ],
+            day: "tuesday",
+            date: new Date(2024, 4, 7),
+          },
+          {
+            id: 3,
+            slots: [],
+            day: "wednesday",
+            date: new Date(2024, 4, 8),
+          },
+          {
+            id: 4,
+            slots: [],
+            day: "thursday",
+            date: new Date(2024, 4, 9),
+          },
+          {
+            id: 5,
+            slots: [],
+            day: "friday",
+            date: new Date(2024, 4, 10),
+          },
+          {
+            id: 6,
+            slots: [],
+            day: "saturday",
+            date: new Date(2024, 4, 11),
           },
         ],
       },
     ],
   });
-  // для начала будет 1 неделя расписания
-  const [currentWeek, setCurrentWeek] = useState(scheduleGroup.weeks[0]);
+  const [maxWeeks, setMaxWeeks] = useState(scheduleGroup.weeks.length);
+  const [currentWeekNumber, setCurrentWeekNumber] = useState(1);
+  const [currentWeek, setCurrentWeek] = useState(
+    scheduleGroup.weeks[currentWeekNumber]
+  );
 
   const [createModal, setCreateModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
@@ -146,10 +244,14 @@ function App() {
         return newDaySlot;
       } else return dayslot;
     });
-    console.log(newDaySlots);
     const newCurrentWeek = { ...currentWeek, dayslots: newDaySlots };
-
-    setCurrentWeek(newCurrentWeek);
+    const newWeeks = scheduleGroup.weeks.map((week) => {
+      if (week.number == currentWeekNumber) {
+        return newCurrentWeek;
+      } else return week;
+    });
+    const newScheduleGroup = { ...scheduleGroup, weeks: newWeeks };
+    setScheduleGroup(newScheduleGroup);
   }
 
   function deleteSlot(dayslot, slot_id) {
@@ -178,6 +280,11 @@ function App() {
     setDeleteModal(false);
   }
 
+  useEffect(() => {
+    if (scheduleGroup.weeks.length < currentWeekNumber) return;
+    setCurrentWeek(scheduleGroup.weeks[currentWeekNumber - 1]);
+  }, [currentWeekNumber, scheduleGroup]);
+
   return (
     <div className="App">
       <NavBar>
@@ -185,12 +292,15 @@ function App() {
           Создать слот
         </Button>
       </NavBar>
-
       <div className="container">
         <WeekSlotContext.Provider
           value={{ week: currentWeek, selectForDelete }}
         >
-          <WeekBar number={currentWeek.number} />
+          <WeekBar
+            maxWeeks={maxWeeks}
+            number={currentWeekNumber}
+            setNumber={setCurrentWeekNumber}
+          />
           <Modal visible={deleteModal} setVisible={setDeleteModal}>
             <div className="modal_container">
               <div>Вы уверены, что хотите удалить пару?</div>
