@@ -1,19 +1,26 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Select from "../UI/Select/Select";
 import Button from "../UI/Button/Button";
 import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
 import styles from "./SubjectSlotForm.module.css";
+import AuditoriumService from "../../API/AuditoriumService";
 
 const SubjectSlotForm = ({ createSlot }) => {
   const { week } = useContext(WeekSlotContext);
 
-  const [number, setNumber] = useState(1);
-  const [type, setType] = useState("lecture");
-  const [discipline, setDiscipline] = useState("Программирование");
-  const [auditorium, setAuditorium] = useState("6-303");
-  const [day, setDay] = useState("monday");
-  const [teacher, setTeacher] = useState("Иванов И.И.");
-  const [group, setGroup] = useState("ПРО-430Б");
+  const [number, setNumber] = useState(-1);
+  const [type, setType] = useState("");
+  const [discipline, setDiscipline] = useState("");
+  const [auditorium, setAuditorium] = useState("");
+  const [day, setDay] = useState("");
+  const [teacher, setTeacher] = useState("");
+  const [group, setGroup] = useState("");
+  const [auditoriumList, setAuditoriumList] = useState([]);
+
+  async function fetchAudotriums() {
+    const response = await AuditoriumService.getAll();
+    setAuditoriumList(response.data);
+  }
 
   function addNewSlot(e) {
     e.preventDefault();
@@ -32,6 +39,10 @@ const SubjectSlotForm = ({ createSlot }) => {
     const newDaySlot = week.dayslots.find((daySlot) => daySlot.day === day);
     createSlot(newDaySlot, newSlot);
   }
+
+  useEffect(() => {
+    fetchAudotriums();
+  }, []);
 
   return (
     <form className={styles.form}>
@@ -95,11 +106,12 @@ const SubjectSlotForm = ({ createSlot }) => {
       <Select
         onChange={setAuditorium}
         defaultValue={"Аудитория"}
-        options={[
-          { value: "6-202", name: "6-202" },
-          { value: "6-203", name: "6-203" },
-          { value: "6-204", name: "6-204" },
-        ]}
+        options={auditoriumList.map((auditorium) => {
+          return {
+            value: `${auditorium.number}`,
+            name: `${auditorium.number}`,
+          };
+        })}
       />
 
       <label>Преподаватель</label>

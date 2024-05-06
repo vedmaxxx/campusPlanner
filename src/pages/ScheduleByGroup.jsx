@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { WeekSlotContext } from "../components/WeekSlotContext/WeekSlotContext";
 import WeekBar from "../components/WeekBar/WeekBar";
 import Modal from "../components/UI/Modal/Modal";
