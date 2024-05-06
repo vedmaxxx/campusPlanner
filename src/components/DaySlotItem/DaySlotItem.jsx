@@ -8,7 +8,7 @@ import { BREAK_TIME } from "../utils/consts";
 import SlotTime from "../SlotTime/SlotTime";
 import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
 
-function getBreakAfterSlot(slotNumber) {
+const BreakAfterSlot = ({ slotNumber }) => {
   if (slotNumber % 2 == 0 && slotNumber < 7)
     return (
       <div className={styles.break}>
@@ -16,7 +16,7 @@ function getBreakAfterSlot(slotNumber) {
         <div className={styles.break_time}>{BREAK_TIME} мин</div>
       </div>
     );
-}
+};
 
 const DaySlotItem = ({ subjectSlot, date }) => {
   const { deleteSlot } = useContext(WeekSlotContext);
@@ -38,7 +38,7 @@ const DaySlotItem = ({ subjectSlot, date }) => {
         </>
       )}
 
-      {getBreakAfterSlot(subjectSlot.number)}
+      <BreakAfterSlot slotNumber={subjectSlot.number} />
     </>
   );
 };

@@ -304,15 +304,15 @@ const ScheduleByGroup = () => {
           />
           <WeekSlot week={currentWeek} />
 
+          <Modal visible={createModal} setVisible={setCreateModal}>
+            <SubjectSlotForm createSlot={createSubjectSlot} />
+            <Button onClick={() => setCreateModal(false)}>Закрыть</Button>
+          </Modal>
           <Modal visible={deleteModal} setVisible={setDeleteModal}>
             <ModalConfirm
               onSubmit={deleteBtnHandler}
               onCancel={() => setDeleteModal(false)}
             />
-          </Modal>
-          <Modal visible={createModal} setVisible={setCreateModal}>
-            <SubjectSlotForm createSlot={createSubjectSlot} />
-            <Button onClick={() => setCreateModal(false)}>Закрыть</Button>
           </Modal>
         </WeekSlotContext.Provider>
       </div>

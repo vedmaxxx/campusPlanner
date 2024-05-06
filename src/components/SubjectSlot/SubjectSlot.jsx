@@ -24,7 +24,6 @@ const SubjectSlot = ({ subjectSlot, date }) => {
           <IconBtn icon={faPenToSquare} style={{ color: "blue" }} />
           <IconBtn
             onClick={() => {
-              console.log("Удаляемый слот: ", subjectSlot);
               selectForDelete(subjectSlot.id, date);
             }}
             icon={faTrashAlt}
