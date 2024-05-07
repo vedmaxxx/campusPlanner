@@ -1,12 +1,28 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import Select from "../UI/Select/Select";
 import Button from "../UI/Button/Button";
 import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
 import styles from "./SubjectSlotForm.module.css";
 import AuditoriumService from "../../API/AuditoriumService";
 
-const SubjectSlotForm = ({ createSlot }) => {
+const initNewSlot = ({}) => ({
+  id: -1,
+  number: -1,
+  type: "",
+  discipline: "",
+  auditorium: "",
+  day: "",
+  teacher: "",
+  group: "",
+});
+const newSlotReducer = (state, action) => {
+  return state;
+};
+
+const SubjectSlotForm = ({ createSlot, onCancel }) => {
   const { week } = useContext(WeekSlotContext);
+
+  const [newSlotState, dispatch] = useReducer(newSlotReducer, {}, initNewSlot);
 
   const [number, setNumber] = useState(-1);
   const [type, setType] = useState("");
@@ -47,6 +63,7 @@ const SubjectSlotForm = ({ createSlot }) => {
   return (
     <form className={styles.form}>
       <h3 className={styles.title}>Создание слота</h3>
+      <hr />
       <label>День недели</label>
       <Select
         onChange={setDay}
@@ -135,7 +152,10 @@ const SubjectSlotForm = ({ createSlot }) => {
           { value: "ПРО-432Б", name: "ПРО-432Б" },
         ]}
       />
-      <Button onClick={addNewSlot}>Создать слот</Button>
+      <div className={styles.buttons}>
+        <Button onClick={addNewSlot}>Создать слот</Button>
+        <Button onClick={onCancel}>Закрыть</Button>
+      </div>
     </form>
   );
 };

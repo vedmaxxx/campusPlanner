@@ -1,11 +1,13 @@
 import "./styles/App.css";
-import ScheduleByGroup from "./pages/ScheduleByGroup";
+import { BrowserRouter } from "react-router-dom";
+import AppRouter from "./components/AppRouter/AppRouter";
 
 function App() {
   return (
     <div className="App">
-      {/* режим составления расписания ДЛЯ ГРУППЫ */}
-      <ScheduleByGroup />
+      <BrowserRouter>
+        <AppRouter />
+      </BrowserRouter>
     </div>
   );
 }

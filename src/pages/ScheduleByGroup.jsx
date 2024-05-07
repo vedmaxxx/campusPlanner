@@ -7,6 +7,7 @@ import Button from "../components/UI/Button/Button";
 import ModalConfirm from "../components/UI/ModalConfirm/ModalConfirm";
 import WeekSlot from "../components/WeekSlot/WeekSlot";
 import NavBar from "../components/NavBar/NavBar";
+import NavBarLink from "../components/NavBarLink/NavBarLink";
 
 const ScheduleByGroup = () => {
   const [scheduleGroup, setScheduleGroup] = useState({
@@ -291,6 +292,8 @@ const ScheduleByGroup = () => {
   return (
     <>
       <NavBar>
+        <NavBarLink to="/greeting">Главная</NavBarLink>
+
         <Button onClick={() => setCreateModal(true)}>Создать слот</Button>
       </NavBar>
       <div className="container">
@@ -305,14 +308,20 @@ const ScheduleByGroup = () => {
           <WeekSlot week={currentWeek} />
 
           <Modal visible={createModal} setVisible={setCreateModal}>
-            <SubjectSlotForm createSlot={createSubjectSlot} />
-            <Button onClick={() => setCreateModal(false)}>Закрыть</Button>
+            <SubjectSlotForm
+              createSlot={createSubjectSlot}
+              onCancel={() => {
+                setCreateModal(false);
+              }}
+            />
           </Modal>
           <Modal visible={deleteModal} setVisible={setDeleteModal}>
             <ModalConfirm
               onSubmit={deleteBtnHandler}
               onCancel={() => setDeleteModal(false)}
-            />
+            >
+              Вы уверены, что хотите удалить слот?
+            </ModalConfirm>
           </Modal>
         </WeekSlotContext.Provider>
       </div>

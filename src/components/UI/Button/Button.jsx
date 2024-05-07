@@ -4,7 +4,7 @@ import cx from "classnames";
 
 const Button = ({ children, mix, ...props }) => {
   return (
-    <button {...props} className={cx("btn", mix)}>
+    <button {...props} className={cx(styles.btn, mix)}>
       {children}
     </button>
   );

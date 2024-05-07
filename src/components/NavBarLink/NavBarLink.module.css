@@ -1,0 +1,13 @@
+.link {
+  display: block;
+  text-align: center;
+  color: white;
+  font-size: 20px;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+.link:hover {
+  color: rgb(114, 213, 255);
+  transition: 0.3s;
+}
