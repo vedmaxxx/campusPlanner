@@ -8,7 +8,7 @@ const Select = ({ options, defaultValue, value, onChange }) => {
       onChange={(e) => onChange(e.target.value)}
       className={styles.select}
     >
-      <option disabled value="">
+      <option disabled selected value="">
         {defaultValue}
       </option>
       {options.map((option) => (

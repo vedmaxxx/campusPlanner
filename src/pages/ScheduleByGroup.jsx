@@ -10,6 +10,9 @@ import NavBar from "../components/NavBar/NavBar";
 import NavBarLink from "../components/NavBarLink/NavBarLink";
 
 const ScheduleByGroup = () => {
+  // на самом деле достаточно get-ать неделю  для данной страницы, а массив недель хранить не
+  // в стейте, а в обычном массиве
+
   const [scheduleGroup, setScheduleGroup] = useState({
     id: Date.now(),
     semester: 1,
@@ -28,7 +31,6 @@ const ScheduleByGroup = () => {
               {
                 id: 0,
                 number: 1,
-                day: "monday",
                 type: "practice",
                 discipline: "Программирование",
                 auditorium: "6-204",
@@ -38,7 +40,6 @@ const ScheduleByGroup = () => {
               {
                 id: 1,
                 number: 2,
-                day: "monday",
                 type: "lecture",
                 discipline: "Философия",
                 auditorium: "6-202",
@@ -48,7 +49,6 @@ const ScheduleByGroup = () => {
               {
                 id: 2,
                 number: 3,
-                day: "monday",
                 type: "practice",
                 discipline: "Программирование",
                 auditorium: "6-204",
@@ -64,7 +64,6 @@ const ScheduleByGroup = () => {
               {
                 id: 5,
                 number: 1,
-                day: "monday",
                 type: "practice",
                 discipline: "Программирование",
                 auditorium: "6-204",
@@ -74,7 +73,6 @@ const ScheduleByGroup = () => {
               {
                 id: 6,
                 number: 2,
-                day: "monday",
                 type: "lecture",
                 discipline: "Философия",
                 auditorium: "6-202",
@@ -84,7 +82,6 @@ const ScheduleByGroup = () => {
               {
                 id: 7,
                 number: 3,
-                day: "monday",
                 type: "practice",
                 discipline: "Программирование",
                 auditorium: "6-204",
@@ -218,7 +215,8 @@ const ScheduleByGroup = () => {
       },
     ],
   });
-  const [maxWeeks, setMaxWeeks] = useState(scheduleGroup.weeksNumber);
+  const maxWeeks = scheduleGroup.weeksNumber;
+
   const [currentWeekNumber, setCurrentWeekNumber] = useState(1);
   const [currentWeek, setCurrentWeek] = useState(
     scheduleGroup.weeks[currentWeekNumber]

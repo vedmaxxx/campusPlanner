@@ -4,25 +4,12 @@ import Button from "../UI/Button/Button";
 import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
 import styles from "./SubjectSlotForm.module.css";
 import AuditoriumService from "../../API/AuditoriumService";
-
-const initNewSlot = ({}) => ({
-  id: -1,
-  number: -1,
-  type: "",
-  discipline: "",
-  auditorium: "",
-  day: "",
-  teacher: "",
-  group: "",
-});
-const newSlotReducer = (state, action) => {
-  return state;
-};
+import { MAX_SLOTS_PER_DAY, SLOT_TIME_NUMBER } from "../utils/consts";
 
 const SubjectSlotForm = ({ createSlot, onCancel }) => {
   const { week } = useContext(WeekSlotContext);
 
-  const [newSlotState, dispatch] = useReducer(newSlotReducer, {}, initNewSlot);
+  const [auditoriumList, setAuditoriumList] = useState([]);
 
   const [number, setNumber] = useState(-1);
   const [type, setType] = useState("");
@@ -31,7 +18,13 @@ const SubjectSlotForm = ({ createSlot, onCancel }) => {
   const [day, setDay] = useState("");
   const [teacher, setTeacher] = useState("");
   const [group, setGroup] = useState("");
-  const [auditoriumList, setAuditoriumList] = useState([]);
+
+  // массив номеров пар-слотов
+  let timeCounter = 1;
+  const timeOptions = Array.from(
+    { length: MAX_SLOTS_PER_DAY },
+    () => timeCounter++
+  );
 
   async function fetchAudotriums() {
     const response = await AuditoriumService.getAll();
@@ -67,7 +60,7 @@ const SubjectSlotForm = ({ createSlot, onCancel }) => {
       <label>День недели</label>
       <Select
         onChange={setDay}
-        defaultValue={"День недели"}
+        defaultValue={"Выберите день недели"}
         options={[
           { value: "monday", name: "Пн" },
           { value: "tuesday", name: "Вт" },
@@ -82,16 +75,10 @@ const SubjectSlotForm = ({ createSlot, onCancel }) => {
       <Select
         onChange={setNumber}
         defaultValue={"Номер пары"}
-        options={[
-          { value: 1, name: 1 },
-          { value: 2, name: 2 },
-          { value: 3, name: 3 },
-          { value: 4, name: 4 },
-          { value: 5, name: 5 },
-          { value: 6, name: 6 },
-          { value: 7, name: 7 },
-          { value: 8, name: 8 },
-        ]}
+        options={timeOptions.map((option) => ({
+          value: option,
+          name: `${option} пара ${SLOT_TIME_NUMBER[option]}`,
+        }))}
       />
 
       <label>Вид занятия</label>
@@ -104,7 +91,7 @@ const SubjectSlotForm = ({ createSlot, onCancel }) => {
           { value: "laboratory", name: "Лабораторная" },
         ]}
       />
-
+      {/* подгрузка с API */}
       <label>Дисциплина</label>
       <Select
         onChange={setDiscipline}
@@ -118,7 +105,7 @@ const SubjectSlotForm = ({ createSlot, onCancel }) => {
           },
         ]}
       />
-
+      {/* подгрузка с API */}
       <label>Аудитория</label>
       <Select
         onChange={setAuditorium}
@@ -130,7 +117,7 @@ const SubjectSlotForm = ({ createSlot, onCancel }) => {
           };
         })}
       />
-
+      {/* подгрузка с API */}
       <label>Преподаватель</label>
       <Select
         onChange={setTeacher}
@@ -141,7 +128,7 @@ const SubjectSlotForm = ({ createSlot, onCancel }) => {
           { value: "Грачев Г.Г.", name: "Грачев Г.Г." },
         ]}
       />
-
+      {/* подгрузка с API */}
       <label>Группа</label>
       <Select
         onChange={setGroup}
