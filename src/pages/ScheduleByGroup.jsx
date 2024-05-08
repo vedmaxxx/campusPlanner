@@ -8,6 +8,8 @@ import ModalConfirm from "../components/UI/ModalConfirm/ModalConfirm";
 import WeekSlot from "../components/WeekSlot/WeekSlot";
 import NavBar from "../components/NavBar/NavBar";
 import NavBarLink from "../components/NavBarLink/NavBarLink";
+import CreateSlotForm from "../components/CreateSlotForm/CreateSlotForm";
+import EditSlotForm from "../components/EditSlotForm/EditSlotForm";
 
 const ScheduleByGroup = () => {
   // на самом деле достаточно get-ать неделю  для данной страницы, а массив недель хранить не
@@ -224,11 +226,12 @@ const ScheduleByGroup = () => {
 
   const [createModal, setCreateModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
 
   // дата редактируемого daySlot
   const [daySlotDate, setDaySlotDate] = useState(null);
   // дата удаляемого subjectSlot
-  const [deletingSubjectSlotId, setDeletingSubjectSlotId] = useState(-1);
+  const [selectedSlotId, setSelectedSlotId] = useState(-1);
 
   // помещает исправленные слоты в расписание группы
   function updateSubjectSlotsInScheduleGroup(daySlot, slots) {
@@ -266,18 +269,35 @@ const ScheduleByGroup = () => {
     const newSlots = dayslot.slots.filter((sl) => sl.id !== slot_id);
     updateSubjectSlotsInScheduleGroup(dayslot, newSlots);
   }
+  function editSubjectSlot(dayslot, slot) {
+    console.log("Здесь вписываем измененный слот в расписание");
+  }
+
   function selectForDelete(slot_id, date) {
     setDaySlotDate(date);
-    setDeletingSubjectSlotId(slot_id);
+    setSelectedSlotId(slot_id);
     setDeleteModal(true);
+  }
+  function selectForEdit(slot_id, date) {
+    console.log("selectForEdit");
+    setDaySlotDate(date);
+    setSelectedSlotId(slot_id);
+    setEditModal(true);
   }
 
   function deleteBtnHandler() {
     let dayslot = currentWeek.dayslots.find(
       (dayslot) => dayslot.date == daySlotDate
     );
-    deleteSubjectSlot(dayslot, deletingSubjectSlotId);
+    deleteSubjectSlot(dayslot, selectedSlotId);
     setDeleteModal(false);
+  }
+  function editBtnHandler() {
+    console.log("editBtnHandler");
+    let dayslot = currentWeek.dayslots.find(
+      (dayslot) => dayslot.date == daySlotDate
+    );
+    editSubjectSlot(dayslot, selectedSlotId);
   }
 
   useEffect(() => {
@@ -296,7 +316,12 @@ const ScheduleByGroup = () => {
       </NavBar>
       <div className="container">
         <WeekSlotContext.Provider
-          value={{ week: currentWeek, selectForDelete }}
+          value={{
+            week: currentWeek,
+            selectForDelete,
+            selectForEdit,
+            deleteBtnHandler,
+          }}
         >
           <WeekBar
             maxWeeks={maxWeeks}
@@ -305,10 +330,25 @@ const ScheduleByGroup = () => {
           />
           <WeekSlot week={currentWeek} />
 
+          <Modal visible={editModal} setVisible={setEditModal}>
+            <EditSlotForm
+              editSlot={editSubjectSlot}
+              editBtnHandler={editBtnHandler}
+              onCancel={(e) => {
+                e.preventDefault();
+                setSelectedSlotId(-1);
+                setDaySlotDate(0);
+                setEditModal(false);
+              }}
+            />
+          </Modal>
           <Modal visible={createModal} setVisible={setCreateModal}>
-            <SubjectSlotForm
+            <CreateSlotForm
               createSlot={createSubjectSlot}
-              onCancel={() => {
+              onCancel={(e) => {
+                e.preventDefault();
+                setSelectedSlotId(-1);
+                setDaySlotDate(0);
                 setCreateModal(false);
               }}
             />

@@ -1,44 +1,51 @@
 import React, { useContext, useState } from "react";
-import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
 import { MAX_SLOTS_PER_DAY, SLOT_TIME_NUMBER } from "../utils/consts";
-import styles from "./EditSlotForm.module.css";
 import Select from "../UI/Select/Select";
+import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
+import styles from "./CreateSlotForm.module.css";
 import Button from "../UI/Button/Button";
 
-const EditSlotForm = ({ editSlot, editBtnHandler, onCancel }) => {
-  const { week, daySlotDate } = useContext(WeekSlotContext);
+const CreateSlotForm = ({ createSlot, onCancel }) => {
+  const { week } = useContext(WeekSlotContext);
 
-  // const [number, setNumber] = useState(subjectSlot.number);
-  // const [type, setType] = useState(subjectSlot.type);
-  // const [discipline, setDiscipline] = useState(subjectSlot.discipline);
-  // const [auditorium, setAuditorium] = useState(subjectSlot.auditorium);
-  // const [day, setDay] = useState(subjectSlot.day);
-  // const [teacher, setTeacher] = useState(subjectSlot.teacher);
+  const [number, setNumber] = useState(-1);
+  const [type, setType] = useState("");
+  const [discipline, setDiscipline] = useState("");
+  const [auditorium, setAuditorium] = useState("");
+  const [day, setDay] = useState("");
+  const [teacher, setTeacher] = useState("");
+  const [group, setGroup] = useState("");
 
-  function changeSlot(e) {
+  // массив номеров пар-слотов
+  let timeCounter = 1;
+  const timeOptions = Array.from(
+    { length: MAX_SLOTS_PER_DAY },
+    () => timeCounter++
+  );
+
+  function addNewSlot(e) {
     e.preventDefault();
 
-    const slot = {
-      // id: Date.now(),
-      // number: Number(number),
-      // type: type,
-      // discipline: discipline,
-      // auditorium: auditorium,
-      // day: day,
-      // teacher: teacher,
-      // group: group,
+    const newSlot = {
+      id: Date.now(),
+      number: Number(number),
+      type: type,
+      discipline: discipline,
+      auditorium: auditorium,
+      day: day,
+      teacher: teacher,
+      group: group,
     };
 
-    // const daySlot = week.dayslots.find((daySlot) => daySlot.day === day);
-    // editSlot(daySlot, slot);
+    const newDaySlot = week.dayslots.find((daySlot) => daySlot.day === day);
+    createSlot(newDaySlot, newSlot);
   }
 
   return (
     <form className={styles.form}>
-      <h3 className={styles.title}>Редактирование слота</h3>
+      <h3 className={styles.title}>Создание слота</h3>
       <hr />
-
-      {/* <label>День недели</label>
+      <label>День недели</label>
       <Select
         onChange={setDay}
         defaultValue={"Выберите день недели"}
@@ -71,9 +78,9 @@ const EditSlotForm = ({ editSlot, editBtnHandler, onCancel }) => {
           { value: "practice", name: "Практика" },
           { value: "laboratory", name: "Лабораторная" },
         ]}
-      /> */}
+      />
       {/* подгрузка с API */}
-      {/* <label>Дисциплина</label>
+      <label>Дисциплина</label>
       <Select
         onChange={setDiscipline}
         defaultValue={"Дисциплина"}
@@ -85,9 +92,9 @@ const EditSlotForm = ({ editSlot, editBtnHandler, onCancel }) => {
             name: "Средства вычислительной техники",
           },
         ]}
-      /> */}
+      />
       {/* подгрузка с API */}
-      {/* <label>Аудитория</label>
+      <label>Аудитория</label>
       <Select
         onChange={setAuditorium}
         defaultValue={"Аудитория"}
@@ -95,9 +102,9 @@ const EditSlotForm = ({ editSlot, editBtnHandler, onCancel }) => {
           { value: 1, name: "4-513" },
           { value: 2, name: "4-515" },
         ]}
-      /> */}
+      />
       {/* подгрузка с API */}
-      {/* <label>Преподаватель</label>
+      <label>Преподаватель</label>
       <Select
         onChange={setTeacher}
         defaultValue={"Преподаватель"}
@@ -106,21 +113,24 @@ const EditSlotForm = ({ editSlot, editBtnHandler, onCancel }) => {
           { value: "Васильев В.В.", name: "Васильев В.В." },
           { value: "Грачев Г.Г.", name: "Грачев Г.Г." },
         ]}
-      /> */}
-
+      />
+      {/* подгрузка с API */}
+      <label>Группа</label>
+      <Select
+        onChange={setGroup}
+        defaultValue={"Группа"}
+        options={[
+          { value: "ПРО-430Б", name: "ПРО-430Б" },
+          { value: "ПРО-431Б", name: "ПРО-431Б" },
+          { value: "ПРО-432Б", name: "ПРО-432Б" },
+        ]}
+      />
       <div className={styles.buttons}>
-        <Button
-          onClick={(e) => {
-            e.preventDefault();
-            editBtnHandler();
-          }}
-        >
-          Изменить слот
-        </Button>
+        <Button onClick={addNewSlot}>Создать слот</Button>
         <Button onClick={onCancel}>Закрыть</Button>
       </div>
     </form>
   );
 };
 
-export default EditSlotForm;
+export default CreateSlotForm;

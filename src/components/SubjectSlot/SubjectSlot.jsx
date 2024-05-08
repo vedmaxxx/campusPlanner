@@ -7,7 +7,7 @@ import styles from "./SubjectSlot.module.css";
 import cx from "classnames";
 
 const SubjectSlot = ({ subjectSlot, date }) => {
-  const { selectForDelete } = useContext(WeekSlotContext);
+  const { selectForDelete, selectForEdit } = useContext(WeekSlotContext);
 
   return (
     <div className={styles.container}>
@@ -21,7 +21,13 @@ const SubjectSlot = ({ subjectSlot, date }) => {
         <div>{subjectSlot.group}</div>
 
         <div className={styles.footer}>
-          <IconBtn icon={faPenToSquare} style={{ color: "blue" }} />
+          <IconBtn
+            onClick={() => {
+              selectForEdit(subjectSlot.id, date);
+            }}
+            icon={faPenToSquare}
+            style={{ color: "blue" }}
+          />
           <IconBtn
             onClick={() => {
               selectForDelete(subjectSlot.id, date);
