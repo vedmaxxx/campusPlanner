@@ -11,10 +11,7 @@ import CreateSlotForm from "../components/CreateSlotForm/CreateSlotForm";
 import EditSlotForm from "../components/EditSlotForm/EditSlotForm";
 
 const ScheduleByGroup = () => {
-  // на самом деле достаточно get-ать неделю  для данной страницы, а массив недель хранить не
-  // в стейте, а в обычном массиве
-
-  const [scheduleGroup, setScheduleGroup] = useState({
+  const schedule = {
     id: Date.now(),
     semester: 1,
     group: "ПРО-430Б",
@@ -215,12 +212,12 @@ const ScheduleByGroup = () => {
         ],
       },
     ],
-  });
-  const maxWeeks = scheduleGroup.weeksNumber;
+  };
+  const maxWeeks = schedule.weeksNumber;
 
   const [currentWeekNumber, setCurrentWeekNumber] = useState(1);
   const [currentWeek, setCurrentWeek] = useState(
-    scheduleGroup.weeks[currentWeekNumber]
+    schedule.weeks[currentWeekNumber]
   );
 
   const [createModal, setCreateModal] = useState(false);
@@ -241,13 +238,15 @@ const ScheduleByGroup = () => {
       } else return dayslot;
     });
     const newCurrentWeek = { ...currentWeek, dayslots: newDaySlots };
-    const newWeeks = scheduleGroup.weeks.map((week) => {
-      if (week.number == currentWeekNumber) {
-        return newCurrentWeek;
-      } else return week;
+    schedule.weeks[currentWeekNumber - 1].dayslots.map((dayslot) => {
+      if (dayslot.id === newDaySlot.id) {
+        return newDaySlot;
+      } else return dayslot;
     });
-    const newScheduleGroup = { ...scheduleGroup, weeks: newWeeks };
-    setScheduleGroup(newScheduleGroup);
+    // Изменили неделю в объекте расписания
+    schedule.weeks[currentWeekNumber - 1] = newCurrentWeek;
+    // Установили в состояние текущее отображение
+    setCurrentWeek(newCurrentWeek);
   }
 
   function createSubjectSlot(dayslot, slot) {
@@ -264,6 +263,7 @@ const ScheduleByGroup = () => {
     const newSlots = [...dayslot.slots, slot];
     updateSubjectSlotsInScheduleGroup(dayslot, newSlots);
   }
+
   function deleteSubjectSlot(dayslot, slot_id) {
     const newSlots = dayslot.slots.filter((sl) => sl.id !== slot_id);
     updateSubjectSlotsInScheduleGroup(dayslot, newSlots);
@@ -279,9 +279,6 @@ const ScheduleByGroup = () => {
     setDeleteModal(true);
   }
   function selectForEdit(slot_id, date) {
-    console.log(slot_id);
-    console.log(date);
-
     setDaySlotDate(date);
     setSelectedSlotId(slot_id);
     setEditModal(true);
@@ -302,12 +299,18 @@ const ScheduleByGroup = () => {
     return dayslot?.slots?.find((slot) => slot.id == selectedSlotId);
   }
 
+  // useEffect(() => {
+  //   if (scheduleGroup.weeks.length < currentWeekNumber) {
+  //     setCurrentWeek([]);
+  //   }
+  //   setCurrentWeek(scheduleGroup.weeks[currentWeekNumber - 1]);
+  // }, [currentWeekNumber, scheduleGroup]);
   useEffect(() => {
-    if (scheduleGroup.weeks.length < currentWeekNumber) {
+    if (schedule.weeks.length < currentWeekNumber) {
       setCurrentWeek([]);
     }
-    setCurrentWeek(scheduleGroup.weeks[currentWeekNumber - 1]);
-  }, [currentWeekNumber, scheduleGroup]);
+    setCurrentWeek(schedule.weeks[currentWeekNumber - 1]);
+  }, [currentWeekNumber]);
 
   return (
     <>
