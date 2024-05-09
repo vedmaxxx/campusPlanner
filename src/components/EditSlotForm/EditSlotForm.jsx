@@ -5,8 +5,8 @@ import styles from "./EditSlotForm.module.css";
 import Select from "../UI/Select/Select";
 import Button from "../UI/Button/Button";
 
-const EditSlotForm = ({ slot, daySlotDate, applyChanges, onCancel }) => {
-  const { week } = useContext(WeekSlotContext);
+const EditSlotForm = ({ slot, applyChanges, onCancel }) => {
+  const { week, daySlotDate } = useContext(WeekSlotContext);
   const [type, setType] = useState("");
   const [discipline, setDiscipline] = useState("");
   const [auditorium, setAuditorium] = useState("");

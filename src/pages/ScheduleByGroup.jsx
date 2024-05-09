@@ -323,7 +323,6 @@ const ScheduleByGroup = () => {
             daySlotDate,
             selectForDelete,
             selectForEdit,
-            deleteBtnHandler,
           }}
         >
           <WeekBar

@@ -6,7 +6,6 @@ import styles from "./DaySlotItem.module.css";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 import { BREAK_TIME } from "../utils/consts";
 import SlotTime from "../SlotTime/SlotTime";
-import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
 
 const BreakAfterSlot = ({ slotNumber }) => {
   if (slotNumber % 2 == 0 && slotNumber < 7)
@@ -19,8 +18,6 @@ const BreakAfterSlot = ({ slotNumber }) => {
 };
 
 const DaySlotItem = ({ subjectSlot, date }) => {
-  const { deleteSlot } = useContext(WeekSlotContext);
-
   return (
     <>
       {subjectSlot.isEmpty ? (
@@ -32,7 +29,6 @@ const DaySlotItem = ({ subjectSlot, date }) => {
           <SubjectSlot
             key={subjectSlot.number}
             subjectSlot={subjectSlot}
-            deleteSlot={deleteSlot}
             date={date}
           />
         </>
