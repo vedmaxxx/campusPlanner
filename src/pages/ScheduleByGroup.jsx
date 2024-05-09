@@ -2,7 +2,6 @@ import React, { useEffect, useReducer, useState } from "react";
 import { WeekSlotContext } from "../components/WeekSlotContext/WeekSlotContext";
 import WeekBar from "../components/WeekBar/WeekBar";
 import Modal from "../components/UI/Modal/Modal";
-import SubjectSlotForm from "../components/SubjectSlotForm/SubjectSlotForm";
 import Button from "../components/UI/Button/Button";
 import ModalConfirm from "../components/UI/ModalConfirm/ModalConfirm";
 import WeekSlot from "../components/WeekSlot/WeekSlot";
@@ -269,8 +268,9 @@ const ScheduleByGroup = () => {
     const newSlots = dayslot.slots.filter((sl) => sl.id !== slot_id);
     updateSubjectSlotsInScheduleGroup(dayslot, newSlots);
   }
-  function editSubjectSlot(dayslot, slot) {
-    console.log("Здесь вписываем измененный слот в расписание");
+  function applyChanges(dayslot, slot) {
+    const newSlots = dayslot.slots.map((sl) => (sl.id == slot.id ? slot : sl));
+    updateSubjectSlotsInScheduleGroup(dayslot, newSlots);
   }
 
   function selectForDelete(slot_id, date) {
@@ -279,7 +279,9 @@ const ScheduleByGroup = () => {
     setDeleteModal(true);
   }
   function selectForEdit(slot_id, date) {
-    console.log("selectForEdit");
+    console.log(slot_id);
+    console.log(date);
+
     setDaySlotDate(date);
     setSelectedSlotId(slot_id);
     setEditModal(true);
@@ -292,12 +294,12 @@ const ScheduleByGroup = () => {
     deleteSubjectSlot(dayslot, selectedSlotId);
     setDeleteModal(false);
   }
-  function editBtnHandler() {
-    console.log("editBtnHandler");
-    let dayslot = currentWeek.dayslots.find(
-      (dayslot) => dayslot.date == daySlotDate
+
+  function getSlot() {
+    let dayslot = currentWeek?.dayslots?.find(
+      (dayslot) => dayslot?.date == daySlotDate
     );
-    editSubjectSlot(dayslot, selectedSlotId);
+    return dayslot?.slots?.find((slot) => slot.id == selectedSlotId);
   }
 
   useEffect(() => {
@@ -318,6 +320,7 @@ const ScheduleByGroup = () => {
         <WeekSlotContext.Provider
           value={{
             week: currentWeek,
+            daySlotDate,
             selectForDelete,
             selectForEdit,
             deleteBtnHandler,
@@ -332,12 +335,12 @@ const ScheduleByGroup = () => {
 
           <Modal visible={editModal} setVisible={setEditModal}>
             <EditSlotForm
-              editSlot={editSubjectSlot}
-              editBtnHandler={editBtnHandler}
+              slot={getSlot()}
+              daySlotDate={daySlotDate}
+              applyChanges={applyChanges}
               onCancel={(e) => {
                 e.preventDefault();
-                setSelectedSlotId(-1);
-                setDaySlotDate(0);
+                //
                 setEditModal(false);
               }}
             />
