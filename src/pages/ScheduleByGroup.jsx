@@ -299,12 +299,6 @@ const ScheduleByGroup = () => {
     return dayslot?.slots?.find((slot) => slot.id == selectedSlotId);
   }
 
-  // useEffect(() => {
-  //   if (scheduleGroup.weeks.length < currentWeekNumber) {
-  //     setCurrentWeek([]);
-  //   }
-  //   setCurrentWeek(scheduleGroup.weeks[currentWeekNumber - 1]);
-  // }, [currentWeekNumber, scheduleGroup]);
   useEffect(() => {
     if (schedule.weeks.length < currentWeekNumber) {
       setCurrentWeek([]);
