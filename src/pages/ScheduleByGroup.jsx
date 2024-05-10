@@ -11,7 +11,7 @@ import CreateSlotForm from "../components/CreateSlotForm/CreateSlotForm";
 import EditSlotForm from "../components/EditSlotForm/EditSlotForm";
 
 const ScheduleByGroup = () => {
-  const schedule = {
+  const [schedule, setSchedule] = useState({
     id: Date.now(),
     semester: 1,
     group: "ПРО-430Б",
@@ -23,8 +23,7 @@ const ScheduleByGroup = () => {
         dayslots: [
           {
             id: 1,
-            day: "monday",
-            number: 1,
+
             slots: [
               {
                 id: 0,
@@ -54,6 +53,7 @@ const ScheduleByGroup = () => {
                 teacher: "",
               },
             ],
+            day: "monday",
             date: new Date(2024, 3, 29),
           },
           {
@@ -212,25 +212,22 @@ const ScheduleByGroup = () => {
         ],
       },
     ],
-  };
-  const maxWeeks = schedule.weeksNumber;
+  });
 
   const [currentWeekNumber, setCurrentWeekNumber] = useState(1);
   const [currentWeek, setCurrentWeek] = useState(
     schedule.weeks[currentWeekNumber]
   );
 
+  const [daySlotDate, setDaySlotDate] = useState(null);
+  const [selectedSlotId, setSelectedSlotId] = useState(-1);
+
   const [createModal, setCreateModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
 
-  // дата редактируемого daySlot
-  const [daySlotDate, setDaySlotDate] = useState(null);
-  // дата удаляемого subjectSlot
-  const [selectedSlotId, setSelectedSlotId] = useState(-1);
-
-  // помещает исправленные слоты в расписание группы
-  function updateSubjectSlotsInScheduleGroup(daySlot, slots) {
+  // помещает исправленные слоты в массив schedule и состояние currentWeek
+  function handleSlotsChanges(daySlot, slots) {
     const newDaySlot = { ...daySlot, slots: slots };
     const newDaySlots = currentWeek.dayslots.map((dayslot) => {
       if (dayslot.id === newDaySlot.id) {
@@ -238,18 +235,30 @@ const ScheduleByGroup = () => {
       } else return dayslot;
     });
     const newCurrentWeek = { ...currentWeek, dayslots: newDaySlots };
-    schedule.weeks[currentWeekNumber - 1].dayslots.map((dayslot) => {
-      if (dayslot.id === newDaySlot.id) {
-        return newDaySlot;
-      } else return dayslot;
-    });
-    // Изменили неделю в объекте расписания
-    schedule.weeks[currentWeekNumber - 1] = newCurrentWeek;
-    // Установили в состояние текущее отображение
+
+    const newWeeks = schedule.weeks.map((week) =>
+      week.number == currentWeekNumber ? newCurrentWeek : week
+    );
+    const newSchedule = { ...schedule, weeks: newWeeks };
+    setSchedule(newSchedule);
     setCurrentWeek(newCurrentWeek);
+    // const newSchedule = schedule.weeks.map((week) =>
+    //   week.id == newCurrentWeek.id ? newCurrentWeek : week
+    // );
+    // setSchedule(newSchedule);
+
+    // schedule.weeks[currentWeekNumber - 1].dayslots.map((dayslot) => {
+    //   if (dayslot.id === newDaySlot.id) {
+    //     return newDaySlot;
+    //   } else return dayslot;
+    // });
+    // Изменили неделю в объекте расписания
+    // schedule.weeks[currentWeekNumber - 1] = newCurrentWeek;
+    // Установили в состояние текущее отображение
+    // setCurrentWeek(newCurrentWeek);
   }
 
-  function createSubjectSlot(dayslot, slot) {
+  function handleCreateSlot(dayslot, slot) {
     if (slot.number === undefined || slot.number === -1) {
       alert("Введите номер пары");
       return;
@@ -261,16 +270,16 @@ const ScheduleByGroup = () => {
       }
     }
     const newSlots = [...dayslot.slots, slot];
-    updateSubjectSlotsInScheduleGroup(dayslot, newSlots);
+    handleSlotsChanges(dayslot, newSlots);
   }
-
-  function deleteSubjectSlot(dayslot, slot_id) {
+  function handleDeleteSlot(dayslot, slot_id) {
     const newSlots = dayslot.slots.filter((sl) => sl.id !== slot_id);
-    updateSubjectSlotsInScheduleGroup(dayslot, newSlots);
+    handleSlotsChanges(dayslot, newSlots);
+    console.log(schedule);
   }
-  function applyChanges(dayslot, slot) {
+  function handleEditSlot(dayslot, slot) {
     const newSlots = dayslot.slots.map((sl) => (sl.id == slot.id ? slot : sl));
-    updateSubjectSlotsInScheduleGroup(dayslot, newSlots);
+    handleSlotsChanges(dayslot, newSlots);
   }
 
   function selectForDelete(slot_id, date) {
@@ -288,15 +297,28 @@ const ScheduleByGroup = () => {
     let dayslot = currentWeek.dayslots.find(
       (dayslot) => dayslot.date == daySlotDate
     );
-    deleteSubjectSlot(dayslot, selectedSlotId);
+    handleDeleteSlot(dayslot, selectedSlotId);
     setDeleteModal(false);
   }
 
-  function getSlot() {
+  function getSelectedSlot() {
     let dayslot = currentWeek?.dayslots?.find(
       (dayslot) => dayslot?.date == daySlotDate
     );
+    // const dayslot = findDaySlotByDate(daySlotDate);
     return dayslot?.slots?.find((slot) => slot.id == selectedSlotId);
+  }
+
+  function clearSelectedItems() {
+    setSelectedSlotId(-1);
+    setDaySlotDate(null);
+  }
+
+  function findDaySlotByDate(daySlotDate) {
+    let dayslot = currentWeek?.dayslots?.find(
+      (daySlot) => daySlot?.date == daySlotDate
+    );
+    return dayslot;
   }
 
   useEffect(() => {
@@ -323,7 +345,7 @@ const ScheduleByGroup = () => {
           }}
         >
           <WeekBar
-            maxWeeks={maxWeeks}
+            maxWeeks={schedule.weeksNumber}
             number={currentWeekNumber}
             setNumber={setCurrentWeekNumber}
           />
@@ -331,23 +353,22 @@ const ScheduleByGroup = () => {
 
           <Modal visible={editModal} setVisible={setEditModal}>
             <EditSlotForm
-              slot={getSlot()}
+              slot={getSelectedSlot()}
               daySlotDate={daySlotDate}
-              applyChanges={applyChanges}
+              editSlot={handleEditSlot}
               onCancel={(e) => {
                 e.preventDefault();
-                //
+                clearSelectedItems();
                 setEditModal(false);
               }}
             />
           </Modal>
           <Modal visible={createModal} setVisible={setCreateModal}>
             <CreateSlotForm
-              createSlot={createSubjectSlot}
+              createSlot={handleCreateSlot}
               onCancel={(e) => {
                 e.preventDefault();
-                setSelectedSlotId(-1);
-                setDaySlotDate(0);
+                clearSelectedItems();
                 setCreateModal(false);
               }}
             />
