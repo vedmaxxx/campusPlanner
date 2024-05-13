@@ -40,20 +40,24 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
     <form className={styles.form}>
       <h3 className={styles.title}>Редактирование слота</h3>
       <hr />
-      <label>Вид занятия</label>
+      <label>Тип занятия</label>
       <Select
+        name="selectedType"
         onChange={setType}
-        defaultValue={SUBJECT_TYPES[slot?.type]}
+        // defaultValue={type}
+        value={type}
         options={[
           { value: "lecture", name: "Лекция" },
           { value: "practice", name: "Практика" },
           { value: "laboratory", name: "Лабораторная" },
         ]}
       />
-      <label>Дисциплина</label>
+      {/* <label>Дисциплина</label>
       <Select
+        name="selectedDiscipline"
         onChange={setDiscipline}
-        defaultValue={slot?.discipline}
+        defaultValue={"Выберите дисциплину"}
+        value={discipline}
         options={[
           { value: "Программирование", name: "Программирование" },
           { value: "Философия", name: "Философия" },
@@ -67,7 +71,8 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
       <label>Аудитория</label>
       <Select
         onChange={setAuditorium}
-        defaultValue={slot?.auditorium}
+        defaultValue={"Выберите аудиторию"}
+        value={auditorium}
         options={[
           { value: "4-513", name: "4-513" },
           { value: "4-515", name: "4-515" },
@@ -76,13 +81,14 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
       <label>Преподаватель</label>
       <Select
         onChange={setTeacher}
-        defaultValue={slot?.teacher}
+        defaultValue={"Выберите преподавателя"}
+        value={teacher}
         options={[
           { value: "Иванов И.В.", name: "Иванов И. В." },
           { value: "Васильев В.В.", name: "Васильев В.В." },
           { value: "Грачев Г.Г.", name: "Грачев Г.Г." },
         ]}
-      />
+      /> */}
       <div className={styles.buttons}>
         <Button
           onClick={(e) => {

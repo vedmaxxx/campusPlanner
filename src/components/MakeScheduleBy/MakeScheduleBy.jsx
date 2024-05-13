@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./MakeScheduleBy.module.css";
 import Button from "../UI/Button/Button";
 import Modal from "../UI/Modal/Modal";
-import ScheduleByMode from "../ScheduleByMode/ScheduleByMode";
+import FormScheduleBy from "../FormScheduleBy/FormScheduleBy";
 import FormWrapper from "../UI/FormWrapper/FormWrapper";
 import ModalFooter from "../UI/ModalFooter/ModalFooter";
 
@@ -22,11 +22,11 @@ const MakeScheduleBy = () => {
     <div className="container">
       <FormWrapper title={"Создание расписания"}>
         <Modal visible={modal} setVisible={setModal}>
-          <ScheduleByMode mode={mode}></ScheduleByMode>
+          <FormScheduleBy mode={mode}></FormScheduleBy>
           <ModalFooter>
             <Button
               onClick={() => {
-                navigate("/group/schedule");
+                navigate(`/${mode}/schedule`);
               }}
             >
               Перейти к расписанию

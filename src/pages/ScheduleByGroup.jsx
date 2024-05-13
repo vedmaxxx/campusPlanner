@@ -10,6 +10,8 @@ import NavBarLink from "../components/NavBarLink/NavBarLink";
 import CreateSlotForm from "../components/CreateSlotForm/CreateSlotForm";
 import EditSlotForm from "../components/EditSlotForm/EditSlotForm";
 
+// будет приходить объект с данными о группе, семестре, учебном плане и т.д.,
+// по этому объекту потом будет GET-запрос на вытягивание расписания и работа с ним
 const ScheduleByGroup = () => {
   const [schedule, setSchedule] = useState({
     id: Date.now(),
@@ -219,9 +221,11 @@ const ScheduleByGroup = () => {
     schedule.weeks[currentWeekNumber]
   );
 
+  // выбранные день-слот и ID пары-слота
   const [daySlotDate, setDaySlotDate] = useState(null);
   const [selectedSlotId, setSelectedSlotId] = useState(-1);
 
+  // состояния модальных окон
   const [createModal, setCreateModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -241,58 +245,50 @@ const ScheduleByGroup = () => {
     );
     const newSchedule = { ...schedule, weeks: newWeeks };
     setSchedule(newSchedule);
-    setCurrentWeek(newCurrentWeek);
-    // const newSchedule = schedule.weeks.map((week) =>
-    //   week.id == newCurrentWeek.id ? newCurrentWeek : week
-    // );
-    // setSchedule(newSchedule);
-
-    // schedule.weeks[currentWeekNumber - 1].dayslots.map((dayslot) => {
-    //   if (dayslot.id === newDaySlot.id) {
-    //     return newDaySlot;
-    //   } else return dayslot;
-    // });
-    // Изменили неделю в объекте расписания
-    // schedule.weeks[currentWeekNumber - 1] = newCurrentWeek;
-    // Установили в состояние текущее отображение
     // setCurrentWeek(newCurrentWeek);
   }
 
+  // обработчик создания слота-пары
   function handleCreateSlot(dayslot, slot) {
-    if (slot.number === undefined || slot.number === -1) {
+    console.log(slot);
+    if (slot?.number === undefined || slot?.number === -1) {
       alert("Введите номер пары");
       return;
     }
-    for (let sl of dayslot.slots) {
-      if (slot.number == sl.number) {
+    for (let sl of dayslot?.slots) {
+      if (slot?.number == sl.number) {
         alert("Данный слот занят");
         return;
       }
     }
-    const newSlots = [...dayslot.slots, slot];
+    const newSlots = [...dayslot?.slots, slot];
     handleSlotsChanges(dayslot, newSlots);
   }
+  // обработчик удаления слота-пары
   function handleDeleteSlot(dayslot, slot_id) {
     const newSlots = dayslot.slots.filter((sl) => sl.id !== slot_id);
     handleSlotsChanges(dayslot, newSlots);
-    console.log(schedule);
   }
+  // обработчик изменения слота-пары
   function handleEditSlot(dayslot, slot) {
     const newSlots = dayslot.slots.map((sl) => (sl.id == slot.id ? slot : sl));
     handleSlotsChanges(dayslot, newSlots);
   }
 
+  // запоминаем слот и на какой день нужно удалить, открываем окно удаления
   function selectForDelete(slot_id, date) {
     setDaySlotDate(date);
     setSelectedSlotId(slot_id);
     setDeleteModal(true);
   }
+  // запоминаем слот и на какой день нужно изменить, открываем окно редактирования
   function selectForEdit(slot_id, date) {
     setDaySlotDate(date);
     setSelectedSlotId(slot_id);
     setEditModal(true);
   }
 
+  // обработчик нажатия на кнопку удаления слота-пары
   function deleteBtnHandler() {
     let dayslot = currentWeek.dayslots.find(
       (dayslot) => dayslot.date == daySlotDate
@@ -301,24 +297,18 @@ const ScheduleByGroup = () => {
     setDeleteModal(false);
   }
 
+  // функция получения объекта по ID выбранного слота-пары
   function getSelectedSlot() {
     let dayslot = currentWeek?.dayslots?.find(
       (dayslot) => dayslot?.date == daySlotDate
     );
-    // const dayslot = findDaySlotByDate(daySlotDate);
     return dayslot?.slots?.find((slot) => slot.id == selectedSlotId);
   }
 
+  // очистка выбранных слота-дня и слота-пары
   function clearSelectedItems() {
     setSelectedSlotId(-1);
     setDaySlotDate(null);
-  }
-
-  function findDaySlotByDate(daySlotDate) {
-    let dayslot = currentWeek?.dayslots?.find(
-      (daySlot) => daySlot?.date == daySlotDate
-    );
-    return dayslot;
   }
 
   useEffect(() => {
@@ -326,13 +316,12 @@ const ScheduleByGroup = () => {
       setCurrentWeek([]);
     }
     setCurrentWeek(schedule.weeks[currentWeekNumber - 1]);
-  }, [currentWeekNumber]);
+  }, [currentWeekNumber, schedule]);
 
   return (
     <>
       <NavBar>
         <NavBarLink to="/greeting">Главная</NavBarLink>
-
         <Button onClick={() => setCreateModal(true)}>Создать слот</Button>
       </NavBar>
       <div className="container">

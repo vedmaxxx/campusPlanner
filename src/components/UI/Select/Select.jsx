@@ -7,11 +7,11 @@ const Select = ({ options, defaultValue, value, onChange }) => {
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className={styles.select}
-      defaultValue={"DEFAULT"}
+      // defaultValue={"DEFAULT"}
     >
-      <option disabled value={"DEFAULT"}>
+      {/* <option disabled value={"DEFAULT"}>
         {defaultValue}
-      </option>
+      </option> */}
       {options.map((option) => (
         <option key={option.value} value={option.value}>
           {option.name}

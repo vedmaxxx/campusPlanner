@@ -16,7 +16,7 @@ const CreateSlotForm = ({ createSlot, onCancel }) => {
   const [teacher, setTeacher] = useState("");
   const [group, setGroup] = useState("");
 
-  // массив номеров пар-слотов
+  // массив номеров слотов-пар
   let timeCounter = 1;
   const timeOptions = Array.from(
     { length: MAX_SLOTS_PER_DAY },
@@ -39,6 +39,17 @@ const CreateSlotForm = ({ createSlot, onCancel }) => {
 
     const newDaySlot = week.dayslots.find((daySlot) => daySlot.day === day);
     createSlot(newDaySlot, newSlot);
+    clearForm();
+  }
+
+  function clearForm() {
+    setDay("");
+    setNumber(-1);
+    setType("");
+    setDiscipline("");
+    setAuditorium("");
+    setTeacher("");
+    setGroup("");
   }
 
   return (
@@ -58,7 +69,6 @@ const CreateSlotForm = ({ createSlot, onCancel }) => {
           { value: "saturday", name: "Сб" },
         ]}
       />
-
       <label>Номер пары</label>
       <Select
         onChange={setNumber}
@@ -126,7 +136,15 @@ const CreateSlotForm = ({ createSlot, onCancel }) => {
         ]}
       />
       <div className={styles.buttons}>
-        <Button onClick={addNewSlot}>Создать слот</Button>
+        <Button
+          onClick={(e) => {
+            addNewSlot(e);
+
+            onCancel(e);
+          }}
+        >
+          Создать слот
+        </Button>
         <Button onClick={onCancel}>Закрыть</Button>
       </div>
     </form>
