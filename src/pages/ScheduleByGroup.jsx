@@ -9,6 +9,7 @@ import NavBar from "../components/NavBar/NavBar";
 import NavBarLink from "../components/NavBarLink/NavBarLink";
 import CreateSlotForm from "../components/CreateSlotForm/CreateSlotForm";
 import EditSlotForm from "../components/EditSlotForm/EditSlotForm";
+import AuditoriumService from "../API/AuditoriumService";
 
 // будет приходить объект с данными о группе, семестре, учебном плане и т.д.,
 // по этому объекту потом будет GET-запрос на вытягивание расписания и работа с ним
@@ -250,9 +251,12 @@ const ScheduleByGroup = () => {
 
   // обработчик создания слота-пары
   function handleCreateSlot(dayslot, slot) {
-    console.log(slot);
-    if (slot?.number === undefined || slot?.number === -1) {
+    if (slot?.number === undefined || slot?.number === "") {
       alert("Введите номер пары");
+      return;
+    }
+    if (dayslot === undefined || dayslot === "") {
+      alert("Введите день недели");
       return;
     }
     for (let sl of dayslot?.slots) {
@@ -352,9 +356,10 @@ const ScheduleByGroup = () => {
               }}
             />
           </Modal>
+
           <Modal visible={createModal} setVisible={setCreateModal}>
             <CreateSlotForm
-              createSlot={handleCreateSlot}
+              handleCreateSlot={handleCreateSlot}
               onCancel={(e) => {
                 e.preventDefault();
                 clearSelectedItems();

@@ -4,6 +4,7 @@ import { SUBJECT_TYPES } from "../utils/consts";
 import styles from "./EditSlotForm.module.css";
 import Select from "../UI/Select/Select";
 import Button from "../UI/Button/Button";
+import ControlledSelect from "../UI/ControlledSelect/ControlledSelect";
 
 const EditSlotForm = ({ slot, editSlot, onCancel }) => {
   const { week, daySlotDate } = useContext(WeekSlotContext);
@@ -41,10 +42,9 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
       <h3 className={styles.title}>Редактирование слота</h3>
       <hr />
       <label>Тип занятия</label>
-      <Select
+      <ControlledSelect
         name="selectedType"
         onChange={setType}
-        // defaultValue={type}
         value={type}
         options={[
           { value: "lecture", name: "Лекция" },
@@ -52,11 +52,10 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
           { value: "laboratory", name: "Лабораторная" },
         ]}
       />
-      {/* <label>Дисциплина</label>
-      <Select
+      <label>Дисциплина</label>
+      <ControlledSelect
         name="selectedDiscipline"
         onChange={setDiscipline}
-        defaultValue={"Выберите дисциплину"}
         value={discipline}
         options={[
           { value: "Программирование", name: "Программирование" },
@@ -69,9 +68,8 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
       />
 
       <label>Аудитория</label>
-      <Select
+      <ControlledSelect
         onChange={setAuditorium}
-        defaultValue={"Выберите аудиторию"}
         value={auditorium}
         options={[
           { value: "4-513", name: "4-513" },
@@ -79,16 +77,15 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
         ]}
       />
       <label>Преподаватель</label>
-      <Select
+      <ControlledSelect
         onChange={setTeacher}
-        defaultValue={"Выберите преподавателя"}
         value={teacher}
         options={[
           { value: "Иванов И.В.", name: "Иванов И. В." },
           { value: "Васильев В.В.", name: "Васильев В.В." },
           { value: "Грачев Г.Г.", name: "Грачев Г.Г." },
         ]}
-      /> */}
+      />
       <div className={styles.buttons}>
         <Button
           onClick={(e) => {

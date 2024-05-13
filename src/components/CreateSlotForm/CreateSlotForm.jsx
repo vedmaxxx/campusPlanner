@@ -1,14 +1,16 @@
-import React, { useContext, useState } from "react";
-import { MAX_SLOTS_PER_DAY, SLOT_TIME_NUMBER } from "../utils/consts";
-import Select from "../UI/Select/Select";
+import React, { useContext, useEffect, useState } from "react";
+import { SLOT_TIME_NUMBER } from "../utils/consts";
 import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
 import styles from "./CreateSlotForm.module.css";
 import Button from "../UI/Button/Button";
+import ControlledSelect from "../UI/ControlledSelect/ControlledSelect";
+import AuditoriumService from "../../API/AuditoriumService";
 
-const CreateSlotForm = ({ createSlot, onCancel }) => {
+const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
   const { week } = useContext(WeekSlotContext);
+  const timeOptions = [1, 2, 3, 4, 5, 6, 7, 8];
 
-  const [number, setNumber] = useState(-1);
+  const [number, setNumber] = useState("");
   const [type, setType] = useState("");
   const [discipline, setDiscipline] = useState("");
   const [auditorium, setAuditorium] = useState("");
@@ -16,12 +18,13 @@ const CreateSlotForm = ({ createSlot, onCancel }) => {
   const [teacher, setTeacher] = useState("");
   const [group, setGroup] = useState("");
 
-  // массив номеров слотов-пар
-  let timeCounter = 1;
-  const timeOptions = Array.from(
-    { length: MAX_SLOTS_PER_DAY },
-    () => timeCounter++
-  );
+  const [auditoriumList, setAuditoriumList] = useState([]);
+
+  async function fetchAuditoriums() {
+    const response = await AuditoriumService.getAll();
+    console.log(response.data);
+    setAuditoriumList(response.data);
+  }
 
   function addNewSlot(e) {
     e.preventDefault();
@@ -38,13 +41,12 @@ const CreateSlotForm = ({ createSlot, onCancel }) => {
     };
 
     const newDaySlot = week.dayslots.find((daySlot) => daySlot.day === day);
-    createSlot(newDaySlot, newSlot);
-    clearForm();
+    handleCreateSlot(newDaySlot, newSlot);
   }
 
   function clearForm() {
     setDay("");
-    setNumber(-1);
+    setNumber("");
     setType("");
     setDiscipline("");
     setAuditorium("");
@@ -52,14 +54,19 @@ const CreateSlotForm = ({ createSlot, onCancel }) => {
     setGroup("");
   }
 
+  useEffect(() => {
+    fetchAuditoriums();
+  }, []);
+
   return (
     <form className={styles.form}>
       <h3 className={styles.title}>Создание слота</h3>
       <hr />
       <label>День недели</label>
-      <Select
+      {}
+      <ControlledSelect
         onChange={setDay}
-        defaultValue={"Выберите день недели"}
+        value={day}
         options={[
           { value: "monday", name: "Пн" },
           { value: "tuesday", name: "Вт" },
@@ -69,31 +76,30 @@ const CreateSlotForm = ({ createSlot, onCancel }) => {
           { value: "saturday", name: "Сб" },
         ]}
       />
+
       <label>Номер пары</label>
-      <Select
+      <ControlledSelect
         onChange={setNumber}
-        defaultValue={"Номер пары"}
+        value={number}
         options={timeOptions.map((option) => ({
           value: option,
           name: `${option} пара ${SLOT_TIME_NUMBER[option]}`,
         }))}
       />
-
       <label>Вид занятия</label>
-      <Select
+      <ControlledSelect
         onChange={setType}
-        defaultValue={"Тип занятия"}
+        value={type}
         options={[
           { value: "lecture", name: "Лекция" },
           { value: "practice", name: "Практика" },
           { value: "laboratory", name: "Лабораторная" },
         ]}
       />
-      {/* подгрузка с API */}
       <label>Дисциплина</label>
-      <Select
+      <ControlledSelect
         onChange={setDiscipline}
-        defaultValue={"Дисциплина"}
+        value={discipline}
         options={[
           { value: "Программирование", name: "Программирование" },
           { value: "Философия", name: "Философия" },
@@ -103,32 +109,28 @@ const CreateSlotForm = ({ createSlot, onCancel }) => {
           },
         ]}
       />
-      {/* подгрузка с API */}
       <label>Аудитория</label>
-      <Select
+      <ControlledSelect
         onChange={setAuditorium}
-        defaultValue={"Аудитория"}
-        options={[
-          { value: 1, name: "4-513" },
-          { value: 2, name: "4-515" },
-        ]}
+        value={auditorium}
+        options={auditoriumList.map((auditorium) => {
+          return { value: auditorium.id, name: auditorium.number };
+        })}
       />
-      {/* подгрузка с API */}
       <label>Преподаватель</label>
-      <Select
+      <ControlledSelect
         onChange={setTeacher}
-        defaultValue={"Преподаватель"}
+        value={teacher}
         options={[
           { value: "Иванов И.В.", name: "Иванов И. В." },
           { value: "Васильев В.В.", name: "Васильев В.В." },
           { value: "Грачев Г.Г.", name: "Грачев Г.Г." },
         ]}
       />
-      {/* подгрузка с API */}
       <label>Группа</label>
-      <Select
+      <ControlledSelect
         onChange={setGroup}
-        defaultValue={"Группа"}
+        value={group}
         options={[
           { value: "ПРО-430Б", name: "ПРО-430Б" },
           { value: "ПРО-431Б", name: "ПРО-431Б" },
@@ -139,13 +141,18 @@ const CreateSlotForm = ({ createSlot, onCancel }) => {
         <Button
           onClick={(e) => {
             addNewSlot(e);
-
-            onCancel(e);
           }}
         >
           Создать слот
         </Button>
-        <Button onClick={onCancel}>Закрыть</Button>
+        <Button
+          onClick={(e) => {
+            onCancel(e);
+            clearForm();
+          }}
+        >
+          Закрыть
+        </Button>
       </div>
     </form>
   );
