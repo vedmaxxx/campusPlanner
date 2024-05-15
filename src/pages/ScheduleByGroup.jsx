@@ -246,25 +246,10 @@ const ScheduleByGroup = () => {
     );
     const newSchedule = { ...schedule, weeks: newWeeks };
     setSchedule(newSchedule);
-    // setCurrentWeek(newCurrentWeek);
   }
 
   // обработчик создания слота-пары
   function handleCreateSlot(dayslot, slot) {
-    if (slot?.number === undefined || slot?.number === "") {
-      alert("Введите номер пары");
-      return;
-    }
-    if (dayslot === undefined || dayslot === "") {
-      alert("Введите день недели");
-      return;
-    }
-    for (let sl of dayslot?.slots) {
-      if (slot?.number == sl.number) {
-        alert("Данный слот занят");
-        return;
-      }
-    }
     const newSlots = [...dayslot?.slots, slot];
     handleSlotsChanges(dayslot, newSlots);
   }
