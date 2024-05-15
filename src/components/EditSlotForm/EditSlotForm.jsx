@@ -6,35 +6,57 @@ import Select from "../UI/Select/Select";
 import Button from "../UI/Button/Button";
 import ControlledSelect from "../UI/ControlledSelect/ControlledSelect";
 
+const initFormValue = {
+  type: "",
+  discipline: "",
+  auditorium: "",
+  teacher: "",
+};
+
 const EditSlotForm = ({ slot, editSlot, onCancel }) => {
   const { week, daySlotDate } = useContext(WeekSlotContext);
-  const [type, setType] = useState("");
-  const [discipline, setDiscipline] = useState("");
-  const [auditorium, setAuditorium] = useState("");
-  const [teacher, setTeacher] = useState("");
+
+  const [formValue, setFormValue] = useState(initFormValue);
+  let isError = false;
+
+  // const [type, setType] = useState("");
+  // const [discipline, setDiscipline] = useState("");
+  // const [auditorium, setAuditorium] = useState("");
+  // const [teacher, setTeacher] = useState("");
 
   // доступ к первоначальным данным слота внутри select? (сделать +1 option?)
   useEffect(() => {
-    setType(slot?.type);
-    setDiscipline(slot?.discipline);
-    setAuditorium(slot?.auditorium);
-    setTeacher(slot?.teacher);
+    setFormValue({
+      ...formValue,
+      type: slot?.type,
+      discipline: slot?.discipline,
+      auditorium: slot?.auditorium,
+      teacher: slot?.teacher,
+    });
   }, [slot]);
 
   function clearForm() {
-    setType("");
-    setDiscipline("");
-    setAuditorium("");
-    setTeacher("");
+    setFormValue(initFormValue);
   }
 
   function changeSlot(e) {
     e.preventDefault();
+
+    // если хотя бы одно поле в состоянии формы пустое, ставим флаг ошиьки setError(true)
+    for (let select in formValue) {
+      if (formValue[select] == "" || formValue[select] == undefined) {
+        alert("Заполните все поля формы!");
+        isError = true;
+        return;
+      }
+    }
+
     const daySlot = week.dayslots.find(
       (dayslot) => dayslot.date === daySlotDate
     );
-    const newSlot = { ...slot, type, discipline, auditorium, teacher };
+    const newSlot = { ...slot, ...formValue };
     editSlot(daySlot, newSlot);
+    isError = false;
   }
 
   return (
@@ -43,9 +65,9 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
       <hr />
       <label>Тип занятия</label>
       <ControlledSelect
-        name="selectedType"
-        onChange={setType}
-        value={type}
+        name={"type"}
+        onChange={(value) => setFormValue({ ...formValue, type: value })}
+        value={formValue.type}
         options={[
           { value: "lecture", name: "Лекция" },
           { value: "practice", name: "Практика" },
@@ -54,9 +76,9 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
       />
       <label>Дисциплина</label>
       <ControlledSelect
-        name="selectedDiscipline"
-        onChange={setDiscipline}
-        value={discipline}
+        name={"discipline"}
+        onChange={(value) => setFormValue({ ...formValue, discipline: value })}
+        value={formValue.discipline}
         options={[
           { value: "Программирование", name: "Программирование" },
           { value: "Философия", name: "Философия" },
@@ -69,8 +91,9 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
 
       <label>Аудитория</label>
       <ControlledSelect
-        onChange={setAuditorium}
-        value={auditorium}
+        name={"auditorium"}
+        onChange={(value) => setFormValue({ ...formValue, auditorium: value })}
+        value={formValue.auditorium}
         options={[
           { value: "4-513", name: "4-513" },
           { value: "4-515", name: "4-515" },
@@ -78,8 +101,9 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
       />
       <label>Преподаватель</label>
       <ControlledSelect
-        onChange={setTeacher}
-        value={teacher}
+        name={"teacher"}
+        onChange={(value) => setFormValue({ ...formValue, teacher: value })}
+        value={formValue.teacher}
         options={[
           { value: "Иванов И.В.", name: "Иванов И. В." },
           { value: "Васильев В.В.", name: "Васильев В.В." },
@@ -90,8 +114,10 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
         <Button
           onClick={(e) => {
             changeSlot(e);
-            clearForm();
-            onCancel(e);
+            if (!isError) {
+              onCancel(e);
+              clearForm();
+            }
           }}
         >
           Изменить слот

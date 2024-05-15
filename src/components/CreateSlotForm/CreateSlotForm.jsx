@@ -16,10 +16,10 @@ const initFormValue = {
 
 const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
   const { week } = useContext(WeekSlotContext);
-  const timeOptions = [1, 2, 3, 4, 5, 6, 7, 8];
-
   const [formValue, setFormValue] = useState(initFormValue);
-  const [isError, setError] = useState(false);
+
+  const timeOptions = [1, 2, 3, 4, 5, 6, 7, 8];
+  let isError = false;
 
   // заглушка
   function handleSubmit(e) {
@@ -32,7 +32,7 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
     for (let select in formValue) {
       if (formValue[select] == "" || formValue[select] == undefined) {
         alert("Заполните все поля формы!");
-        setError(true);
+        isError = true;
         return;
       }
     }
@@ -56,12 +56,14 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
     for (let sl of newDaySlot?.slots) {
       if (newSlot?.number == sl.number) {
         alert("Данный слот занят");
+        isError = true;
         return;
       }
     }
 
     // вызываем функцию добавления слота-пары в состояние расписания
     handleCreateSlot(newDaySlot, newSlot);
+    isError = false;
   }
 
   // функция очистки состояния формы
@@ -73,7 +75,6 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
     <form className={styles.form} method="post" onSubmit={handleSubmit}>
       <h3 className={styles.title}>Создание слота</h3>
       <hr />
-
       <label>День недели</label>
       <ControlledSelect
         name={"day"}
