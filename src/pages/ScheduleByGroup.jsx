@@ -322,6 +322,7 @@ const ScheduleByGroup = () => {
             selectForEdit,
           }}
         >
+          <div className="group_title">Учебная группа: {schedule.group}</div>
           <WeekBar
             maxWeeks={schedule.weeksNumber}
             number={currentWeekNumber}

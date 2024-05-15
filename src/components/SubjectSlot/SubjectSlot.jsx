@@ -18,7 +18,7 @@ const SubjectSlot = ({ subjectSlot, date }) => {
         <div>{subjectSlot.discipline}</div>
         <div>{subjectSlot.auditorium}</div>
         <div>{subjectSlot.teacher}</div>
-        <div>{subjectSlot.group}</div>
+        {/* <div>{subjectSlot.group}</div> */}
 
         <div className={styles.footer}>
           <IconBtn

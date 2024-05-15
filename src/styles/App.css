@@ -36,3 +36,9 @@ hr {
   margin: 20px 0;
   border: 1px solid rgb(238, 238, 238);
 }
+
+.group_title {
+  font-size: 24px;
+  text-align: left;
+  margin: 20px 0;
+}
