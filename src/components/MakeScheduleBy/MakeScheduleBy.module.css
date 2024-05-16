@@ -1,5 +1,19 @@
+.form {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  background-color: rgb(255, 255, 255);
+  padding: 20px;
+  border-radius: 16px;
+}
+
 .buttons {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
+}
+
+.buttons > p {
+  margin-bottom: 20px;
 }

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
+import { WeekSlotContext } from "../../context/WeekSlotContext";
 import { SUBJECT_TYPES } from "../utils/consts";
 import styles from "./EditSlotForm.module.css";
 import Select from "../UI/Select/Select";
@@ -18,11 +18,6 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
 
   const [formValue, setFormValue] = useState(initFormValue);
   let isError = false;
-
-  // const [type, setType] = useState("");
-  // const [discipline, setDiscipline] = useState("");
-  // const [auditorium, setAuditorium] = useState("");
-  // const [teacher, setTeacher] = useState("");
 
   // доступ к первоначальным данным слота внутри select? (сделать +1 option?)
   useEffect(() => {
@@ -122,7 +117,14 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
         >
           Изменить слот
         </Button>
-        <Button onClick={onCancel}>Закрыть</Button>
+        <Button
+          onClick={(e) => {
+            onCancel(e);
+            clearForm();
+          }}
+        >
+          Закрыть
+        </Button>
       </div>
     </form>
   );

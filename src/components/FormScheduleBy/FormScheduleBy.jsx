@@ -9,9 +9,9 @@ const modes = {
   auditorium: FormByAuditorium,
 };
 
-const FormScheduleBy = ({ mode }) => {
+const FormScheduleBy = ({ mode, onCancel }) => {
   const SelectedMode = modes[mode];
-  return <SelectedMode />;
+  return <SelectedMode onCancel={onCancel} />;
 };
 
 export default FormScheduleBy;

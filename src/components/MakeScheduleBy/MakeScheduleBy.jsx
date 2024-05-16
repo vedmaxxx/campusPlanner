@@ -1,52 +1,48 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useState } from "react";
 import styles from "./MakeScheduleBy.module.css";
 import Button from "../UI/Button/Button";
 import Modal from "../UI/Modal/Modal";
 import FormScheduleBy from "../FormScheduleBy/FormScheduleBy";
-import FormWrapper from "../UI/FormWrapper/FormWrapper";
-import ModalFooter from "../UI/ModalFooter/ModalFooter";
+import { ScheduleContext } from "../../context/ScheduleContext";
+import FormHeader from "../UI/FormHeader/FormHeader";
 
 const MakeScheduleBy = () => {
-  const navigate = useNavigate();
+  const { viewMode, setViewMode } = useContext(ScheduleContext);
   const [modal, setModal] = useState(false);
-  const [mode, setMode] = useState("group");
 
-  function buttonHandler(e) {
+  function selectModeHandler(e) {
     e.preventDefault();
-    setMode(e.target.value);
+    setViewMode(e.target.value);
     setModal(true);
+  }
+  function onCancelHandler(e) {
+    e.preventDefault();
+    setModal(false);
   }
 
   return (
     <div className="container">
-      <FormWrapper title={"Создание расписания"}>
-        <Modal visible={modal} setVisible={setModal}>
-          <FormScheduleBy mode={mode}></FormScheduleBy>
-          <ModalFooter>
-            <Button
-              onClick={() => {
-                navigate(`/${mode}/schedule`);
-              }}
-            >
-              Перейти к расписанию
-            </Button>
-            <Button onClick={() => setModal(false)}>Закрыть</Button>
-          </ModalFooter>
-        </Modal>
+      <div className={styles.form}>
+        <FormHeader>Создание расписания</FormHeader>
         <div className={styles.buttons}>
           <p>Создать расписание для:</p>
-          <Button value={"group"} onClick={buttonHandler}>
+          <Button value={"group"} onClick={selectModeHandler}>
             Группы
           </Button>
-          <Button value={"teacher"} onClick={buttonHandler}>
+          <Button value={"teacher"} onClick={selectModeHandler}>
             Преподавателя
           </Button>
-          <Button value={"auditorium"} onClick={buttonHandler}>
+          <Button value={"auditorium"} onClick={selectModeHandler}>
             Аудитории
           </Button>
         </div>
-      </FormWrapper>
+
+        <Modal visible={modal} setVisible={setModal}>
+          {viewMode !== "" ? (
+            <FormScheduleBy mode={viewMode} onCancel={onCancelHandler} />
+          ) : null}
+        </Modal>
+      </div>
     </div>
   );
 };

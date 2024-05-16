@@ -1,5 +1,5 @@
-import React, { useEffect, useReducer, useState } from "react";
-import { WeekSlotContext } from "../components/WeekSlotContext/WeekSlotContext";
+import React, { useEffect, useState } from "react";
+import { WeekSlotContext } from "../context/WeekSlotContext";
 import WeekBar from "../components/WeekBar/WeekBar";
 import Modal from "../components/UI/Modal/Modal";
 import Button from "../components/UI/Button/Button";
@@ -9,7 +9,6 @@ import NavBar from "../components/NavBar/NavBar";
 import NavBarLink from "../components/NavBarLink/NavBarLink";
 import CreateSlotForm from "../components/CreateSlotForm/CreateSlotForm";
 import EditSlotForm from "../components/EditSlotForm/EditSlotForm";
-import AuditoriumService from "../API/AuditoriumService";
 
 // будет приходить объект с данными о группе, семестре, учебном плане и т.д.,
 // по этому объекту потом будет GET-запрос на вытягивание расписания и работа с ним
@@ -26,7 +25,6 @@ const ScheduleByGroup = () => {
         dayslots: [
           {
             id: 1,
-
             slots: [
               {
                 id: 0,
@@ -242,7 +240,7 @@ const ScheduleByGroup = () => {
     const newCurrentWeek = { ...currentWeek, dayslots: newDaySlots };
 
     const newWeeks = schedule.weeks.map((week) =>
-      week.number == currentWeekNumber ? newCurrentWeek : week
+      week.number === currentWeekNumber ? newCurrentWeek : week
     );
     const newSchedule = { ...schedule, weeks: newWeeks };
     setSchedule(newSchedule);
@@ -260,7 +258,7 @@ const ScheduleByGroup = () => {
   }
   // обработчик изменения слота-пары
   function handleEditSlot(dayslot, slot) {
-    const newSlots = dayslot.slots.map((sl) => (sl.id == slot.id ? slot : sl));
+    const newSlots = dayslot.slots.map((sl) => (sl.id === slot.id ? slot : sl));
     handleSlotsChanges(dayslot, newSlots);
   }
 
@@ -280,7 +278,7 @@ const ScheduleByGroup = () => {
   // обработчик нажатия на кнопку удаления слота-пары
   function deleteBtnHandler() {
     let dayslot = currentWeek.dayslots.find(
-      (dayslot) => dayslot.date == daySlotDate
+      (dayslot) => dayslot.date === daySlotDate
     );
     handleDeleteSlot(dayslot, selectedSlotId);
     setDeleteModal(false);
@@ -289,9 +287,9 @@ const ScheduleByGroup = () => {
   // функция получения объекта по ID выбранного слота-пары
   function getSelectedSlot() {
     let dayslot = currentWeek?.dayslots?.find(
-      (dayslot) => dayslot?.date == daySlotDate
+      (dayslot) => dayslot?.date === daySlotDate
     );
-    return dayslot?.slots?.find((slot) => slot.id == selectedSlotId);
+    return dayslot?.slots?.find((slot) => slot.id === selectedSlotId);
   }
 
   // очистка выбранных слота-дня и слота-пары
@@ -309,20 +307,19 @@ const ScheduleByGroup = () => {
 
   return (
     <>
-      <NavBar>
-        <NavBarLink to="/greeting">Главная</NavBarLink>
-        <Button onClick={() => setCreateModal(true)}>Создать слот</Button>
-      </NavBar>
       <div className="container">
+        <Button onClick={() => setCreateModal(true)}>Создать слот</Button>
+
         <WeekSlotContext.Provider
           value={{
+            viewMode: "group",
             week: currentWeek,
             daySlotDate,
             selectForDelete,
             selectForEdit,
           }}
         >
-          <div className="group_title">Учебная группа: {schedule.group}</div>
+          <div className="group_title">Учебная группа {schedule.group}</div>
           <WeekBar
             maxWeeks={schedule.weeksNumber}
             number={currentWeekNumber}

@@ -42,3 +42,10 @@ hr {
   text-align: left;
   margin: 20px 0;
 }
+
+.view_mode {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+}

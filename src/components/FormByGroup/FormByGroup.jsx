@@ -1,19 +1,47 @@
-import React, { useState } from "react";
-import MyForm from "../UI/FormWrapper/FormWrapper";
+import React, { useContext, useState } from "react";
 import Select from "../UI/Select/Select";
-import FormWrapper from "../UI/FormWrapper/FormWrapper";
+import FormHeader from "../UI/FormHeader/FormHeader";
+import styles from "./FormByGroup.module.css";
+import Button from "../UI/Button/Button";
+import { ScheduleContext } from "../../context/ScheduleContext";
+import { useNavigate } from "react-router-dom";
 
-const FormByGroup = () => {
-  const [group, setGroup] = useState("");
-  const [faculty, setFaculty] = useState("");
-  const [department, setDepartment] = useState("");
-  const [curricilium, setCurricilium] = useState("");
+const initFormValue = {
+  teacher: "",
+  faculty: "",
+  department: "",
+  curricilium: "",
+};
+
+const FormByGroup = ({ setScheduleParams, onCancel }) => {
+  const [formValue, setFormValue] = useState(initFormValue);
+  const { viewMode } = useContext(ScheduleContext);
+  const navigate = useNavigate();
+
+  // функция очистки состояния формы
+  function clearForm() {
+    setFormValue(initFormValue);
+  }
 
   return (
-    <FormWrapper title={"Расписание группы"}>
+    <form className={styles.form}>
+      <FormHeader>Расписание группы</FormHeader>
+      <label>Учебная группа</label>
+      <Select
+        name={"group"}
+        onChange={(value) => setFormValue({ ...formValue, group: value })}
+        defaultValue={"Группа"}
+        options={[
+          { value: "ПРО-430Б", name: "ПРО-430Б" },
+          { value: "ПРО-431Б", name: "ПРО-431Б" },
+          { value: "ПРО-432Б", name: "ПРО-432Б" },
+          { value: "ПРО-433Б", name: "ПРО-433Б" },
+        ]}
+      />
       <label>Учебный план</label>
       <Select
-        onChange={setCurricilium}
+        name={"curricilium"}
+        onChange={(value) => setFormValue({ ...formValue, curricilium: value })}
         defaultValue={"Номер учебного плана"}
         options={[
           { value: "38.03.05 БИ БА 3 2021", name: "38.03.05 БИ БА 3 2021" },
@@ -25,7 +53,8 @@ const FormByGroup = () => {
       />
       <label>Факультет</label>
       <Select
-        onChange={setFaculty}
+        name={"faculty"}
+        onChange={(value) => setFormValue({ ...formValue, faculty: value })}
         defaultValue={"Факультет"}
         options={[
           { value: "ИИМРТ", name: "ИИМРТ" },
@@ -34,25 +63,34 @@ const FormByGroup = () => {
       />
       <label>Кафедра</label>
       <Select
-        onChange={setDepartment}
+        name={"department"}
+        onChange={(value) => setFormValue({ ...formValue, department: value })}
         defaultValue={"Кафедра"}
         options={[
           { value: "ВМиК", name: "ВМиК" },
           { value: "ИИиМО", name: "ИИиМО" },
         ]}
       />
-      <label>Учебная группа</label>
-      <Select
-        onChange={setGroup}
-        defaultValue={"Группа"}
-        options={[
-          { value: "ПРО-430Б", name: "ПРО-430Б" },
-          { value: "ПРО-431Б", name: "ПРО-431Б" },
-          { value: "ПРО-432Б", name: "ПРО-432Б" },
-          { value: "ПРО-433Б", name: "ПРО-433Б" },
-        ]}
-      />
-    </FormWrapper>
+
+      <div className={styles.buttons}>
+        <Button
+          onClick={() => {
+            navigate(`/${viewMode}/schedule`);
+            clearForm();
+          }}
+        >
+          Перейти к расписанию
+        </Button>
+        <Button
+          onClick={(e) => {
+            onCancel(e);
+            clearForm();
+          }}
+        >
+          Закрыть
+        </Button>
+      </div>
+    </form>
   );
 };
 

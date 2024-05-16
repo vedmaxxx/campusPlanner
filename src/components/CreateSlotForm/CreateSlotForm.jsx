@@ -1,9 +1,10 @@
 import React, { useContext, useState } from "react";
 import { SLOT_TIME_NUMBER } from "../utils/consts";
-import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
+import { WeekSlotContext } from "../../context/WeekSlotContext";
 import styles from "./CreateSlotForm.module.css";
 import Button from "../UI/Button/Button";
 import ControlledSelect from "../UI/ControlledSelect/ControlledSelect";
+import { ScheduleContext } from "../../context/ScheduleContext";
 
 const initFormValue = {
   day: "",
@@ -16,6 +17,8 @@ const initFormValue = {
 
 const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
   const { week } = useContext(WeekSlotContext);
+  const { viewMode } = useContext(ScheduleContext);
+
   const [formValue, setFormValue] = useState(initFormValue);
 
   const timeOptions = [1, 2, 3, 4, 5, 6, 7, 8];

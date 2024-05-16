@@ -1,24 +1,43 @@
-import React, { useState } from "react";
-import FormWrapper from "../UI/FormWrapper/FormWrapper";
+import React, { useContext, useState } from "react";
 import Select from "../UI/Select/Select";
+import ModalFooter from "../UI/ModalFooter/ModalFooter";
+import Button from "../UI/Button/Button";
+import { useNavigate } from "react-router-dom";
+import { ScheduleContext } from "../../context/ScheduleContext";
+import FormHeader from "../UI/FormHeader/FormHeader";
+import styles from "./FormByTeacher.module.css";
 
-const FormByTeacher = () => {
-  const [teacher, setTeacher] = useState("");
-  const [faculty, setFaculty] = useState("");
-  const [department, setDepartment] = useState("");
-  const [curricilium, setCurricilium] = useState("");
+const initFormValue = {
+  teacher: "",
+  faculty: "",
+  department: "",
+  curricilium: "",
+};
+
+const FormByTeacher = ({ setScheduleParams, onCancel }) => {
+  const [formValue, setFormValue] = useState(initFormValue);
+  const { viewMode } = useContext(ScheduleContext);
+  const navigate = useNavigate();
+
+  // функция очистки состояния формы
+  function clearForm() {
+    setFormValue(initFormValue);
+  }
 
   return (
-    <FormWrapper title={"Расписание преподавателя"}>
+    <form className={styles.form}>
+      <FormHeader>Расписание преподавателя</FormHeader>
       <label>ФИО преподавателя</label>
       <Select
-        onChange={setTeacher}
+        name={"teacher"}
+        onChange={(value) => setFormValue({ ...formValue, teacher: value })}
         defaultValue={"Преподаватель"}
         options={[{ value: "Иванов И.И.", name: "Иванов И.И." }]}
       />
       <label>Учебный план</label>
       <Select
-        onChange={setCurricilium}
+        name={"curricilum"}
+        onChange={(value) => setFormValue({ ...formValue, curricilium: value })}
         defaultValue={"Номер учебного плана"}
         options={[
           { value: "38.03.05 БИ БА 3 2021", name: "38.03.05 БИ БА 3 2021" },
@@ -30,7 +49,8 @@ const FormByTeacher = () => {
       />
       <label>Факультет</label>
       <Select
-        onChange={setFaculty}
+        name={"faculty"}
+        onChange={(value) => setFormValue({ ...formValue, faculty: value })}
         defaultValue={"Факультет"}
         options={[
           { value: "ИИМРТ", name: "ИИМРТ" },
@@ -39,14 +59,33 @@ const FormByTeacher = () => {
       />
       <label>Кафедра</label>
       <Select
-        onChange={setDepartment}
+        name={"department"}
+        onChange={(value) => setFormValue({ ...formValue, department: value })}
         defaultValue={"Кафедра"}
         options={[
           { value: "ВМиК", name: "ВМиК" },
           { value: "ИИиМО", name: "ИИиМО" },
         ]}
       />
-    </FormWrapper>
+      <div className={styles.buttons}>
+        <Button
+          onClick={() => {
+            navigate(`/${viewMode}/schedule`);
+            clearForm();
+          }}
+        >
+          Перейти к расписанию
+        </Button>
+        <Button
+          onClick={(e) => {
+            onCancel(e);
+            clearForm();
+          }}
+        >
+          Закрыть
+        </Button>
+      </div>
+    </form>
   );
 };
 
