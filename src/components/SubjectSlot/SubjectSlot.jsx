@@ -17,6 +17,7 @@ const SubjectSlot = ({ subjectSlot, date }) => {
           {subjectSlot.number}. {SUBJECT_TYPES[subjectSlot.type]}
         </h3>
         <div>{subjectSlot.discipline}</div>
+
         {viewMode !== "auditorium" ? <div>{subjectSlot.auditorium}</div> : null}
         {viewMode !== "teacher" ? (
           <div>

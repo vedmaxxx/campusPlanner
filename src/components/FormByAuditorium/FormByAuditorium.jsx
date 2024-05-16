@@ -1,19 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import Select from "../UI/Select/Select";
 import FormHeader from "../UI/FormHeader/FormHeader";
 import styles from "./FormByAuditorium.module.css";
 import Button from "../UI/Button/Button";
-import { useNavigate } from "react-router-dom";
-import { ScheduleContext } from "../../context/ScheduleContext";
 
 const initFormValue = {
   auditorium: "",
 };
 
-const FormByAuditorium = ({ setScheduleParams, onCancel }) => {
+const FormByAuditorium = ({ submitHandler, onCancel }) => {
   const [formValue, setFormValue] = useState(initFormValue);
-  const { viewMode } = useContext(ScheduleContext);
-  const navigate = useNavigate();
 
   // функция очистки состояния формы
   function clearForm() {
@@ -32,12 +28,7 @@ const FormByAuditorium = ({ setScheduleParams, onCancel }) => {
       />
 
       <div className={styles.buttons}>
-        <Button
-          onClick={() => {
-            navigate(`/${viewMode}/schedule`);
-            clearForm();
-          }}
-        >
+        <Button onClick={(e) => submitHandler(e, formValue)}>
           Перейти к расписанию
         </Button>
         <Button

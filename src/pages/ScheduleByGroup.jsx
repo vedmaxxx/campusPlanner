@@ -5,8 +5,6 @@ import Modal from "../components/UI/Modal/Modal";
 import Button from "../components/UI/Button/Button";
 import ModalConfirm from "../components/UI/ModalConfirm/ModalConfirm";
 import WeekSlot from "../components/WeekSlot/WeekSlot";
-import NavBar from "../components/NavBar/NavBar";
-import NavBarLink from "../components/NavBarLink/NavBarLink";
 import CreateSlotForm from "../components/CreateSlotForm/CreateSlotForm";
 import EditSlotForm from "../components/EditSlotForm/EditSlotForm";
 

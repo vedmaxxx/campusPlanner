@@ -1,9 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import Select from "../UI/Select/Select";
-import ModalFooter from "../UI/ModalFooter/ModalFooter";
 import Button from "../UI/Button/Button";
-import { useNavigate } from "react-router-dom";
-import { ScheduleContext } from "../../context/ScheduleContext";
 import FormHeader from "../UI/FormHeader/FormHeader";
 import styles from "./FormByTeacher.module.css";
 
@@ -14,10 +11,8 @@ const initFormValue = {
   curricilium: "",
 };
 
-const FormByTeacher = ({ setScheduleParams, onCancel }) => {
+const FormByTeacher = ({ submitHandler, onCancel }) => {
   const [formValue, setFormValue] = useState(initFormValue);
-  const { viewMode } = useContext(ScheduleContext);
-  const navigate = useNavigate();
 
   // функция очистки состояния формы
   function clearForm() {
@@ -68,12 +63,7 @@ const FormByTeacher = ({ setScheduleParams, onCancel }) => {
         ]}
       />
       <div className={styles.buttons}>
-        <Button
-          onClick={() => {
-            navigate(`/${viewMode}/schedule`);
-            clearForm();
-          }}
-        >
+        <Button onClick={(e) => submitHandler(e, formValue)}>
           Перейти к расписанию
         </Button>
         <Button

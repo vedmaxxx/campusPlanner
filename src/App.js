@@ -10,9 +10,10 @@ function App() {
   const [viewMode, setViewMode] = useState("");
   // состояние формируемого расписания
   const [scheduleParams, setScheduleParams] = useState("");
-  // useEffect(() => {
-  //   console.log(viewMode);
-  // }, [viewMode]);
+
+  useEffect(() => {
+    console.log(scheduleParams);
+  }, [scheduleParams]);
 
   return (
     <div className="App">
