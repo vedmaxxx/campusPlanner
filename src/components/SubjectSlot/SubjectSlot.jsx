@@ -1,13 +1,14 @@
 import React, { useContext } from "react";
 import { SUBJECT_TYPES } from "../utils/consts";
-import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
+import { WeekSlotContext } from "../../context/WeekSlotContext";
 import { faPenToSquare, faTrashAlt } from "@fortawesome/free-regular-svg-icons";
 import IconBtn from "../UI/IconBtn/IconBtn";
 import styles from "./SubjectSlot.module.css";
 import cx from "classnames";
 
 const SubjectSlot = ({ subjectSlot, date }) => {
-  const { selectForDelete, selectForEdit } = useContext(WeekSlotContext);
+  const { selectForDelete, selectForEdit, viewMode } =
+    useContext(WeekSlotContext);
 
   return (
     <div className={styles.container}>
@@ -16,9 +17,13 @@ const SubjectSlot = ({ subjectSlot, date }) => {
           {subjectSlot.number}. {SUBJECT_TYPES[subjectSlot.type]}
         </h3>
         <div>{subjectSlot.discipline}</div>
-        <div>{subjectSlot.auditorium}</div>
-        <div>{subjectSlot.teacher}</div>
-        {/* <div>{subjectSlot.group}</div> */}
+        {viewMode !== "auditorium" ? <div>{subjectSlot.auditorium}</div> : null}
+        {viewMode !== "teacher" ? (
+          <div>
+            {subjectSlot.teacher !== "" ? subjectSlot.teacher : "Неизвестен"}
+          </div>
+        ) : null}
+        {viewMode !== "group" ? <div>{subjectSlot.group}</div> : null}
 
         <div className={styles.footer}>
           <IconBtn
