@@ -6,9 +6,8 @@ import styles from "./DaySlotItem.module.css";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 import { BREAK_TIME } from "../utils/consts";
 import SlotTime from "../SlotTime/SlotTime";
-import { WeekSlotContext } from "../WeekSlotContext/WeekSlotContext";
 
-function getBreakAfterSlot(slotNumber) {
+const BreakAfterSlot = ({ slotNumber }) => {
   if (slotNumber % 2 == 0 && slotNumber < 7)
     return (
       <div className={styles.break}>
@@ -16,11 +15,9 @@ function getBreakAfterSlot(slotNumber) {
         <div className={styles.break_time}>{BREAK_TIME} мин</div>
       </div>
     );
-}
+};
 
 const DaySlotItem = ({ subjectSlot, date }) => {
-  const { deleteSlot } = useContext(WeekSlotContext);
-
   return (
     <>
       {subjectSlot.isEmpty ? (
@@ -32,13 +29,12 @@ const DaySlotItem = ({ subjectSlot, date }) => {
           <SubjectSlot
             key={subjectSlot.number}
             subjectSlot={subjectSlot}
-            deleteSlot={deleteSlot}
             date={date}
           />
         </>
       )}
 
-      {getBreakAfterSlot(subjectSlot.number)}
+      <BreakAfterSlot slotNumber={subjectSlot.number} />
     </>
   );
 };

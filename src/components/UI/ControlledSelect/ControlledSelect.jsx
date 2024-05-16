@@ -1,15 +1,14 @@
 import React from "react";
-import styles from "./Select.module.css";
+import styles from "./ControlledSelect.module.css";
 
-const Select = ({ options, defaultValue, value, onChange }) => {
+const ControlledSelect = ({ options, defaultValue, value, onChange }) => {
   return (
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className={styles.select}
-      defaultValue={"DEFAULT"}
     >
-      <option disabled value={"DEFAULT"}>
+      <option key={defaultValue} disabled value={defaultValue}>
         {defaultValue}
       </option>
       {options.map((option) => (
@@ -21,4 +20,4 @@ const Select = ({ options, defaultValue, value, onChange }) => {
   );
 };
 
-export default Select;
+export default ControlledSelect;

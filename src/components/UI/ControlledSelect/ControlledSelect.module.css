@@ -1,0 +1,7 @@
+.select {
+  padding: 5px;
+}
+
+.select option:first-of-type {
+  display: none;
+}
