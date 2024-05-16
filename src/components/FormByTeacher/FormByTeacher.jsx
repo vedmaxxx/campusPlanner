@@ -11,7 +11,7 @@ const initFormValue = {
   curricilium: "",
 };
 
-const FormByTeacher = ({ submitHandler, onCancel }) => {
+const FormByTeacher = ({ onSubmit, onCancel }) => {
   const [formValue, setFormValue] = useState(initFormValue);
 
   // функция очистки состояния формы
@@ -63,7 +63,7 @@ const FormByTeacher = ({ submitHandler, onCancel }) => {
         ]}
       />
       <div className={styles.buttons}>
-        <Button onClick={(e) => submitHandler(e, formValue)}>
+        <Button onClick={(e) => onSubmit(e, formValue)}>
           Перейти к расписанию
         </Button>
         <Button

@@ -5,10 +5,13 @@ import Modal from "../UI/Modal/Modal";
 import FormScheduleBy from "../FormScheduleBy/FormScheduleBy";
 import { ScheduleContext } from "../../context/ScheduleContext";
 import FormHeader from "../UI/FormHeader/FormHeader";
+import { useNavigate } from "react-router-dom";
 
 const MakeScheduleBy = () => {
-  const { viewMode, setViewMode } = useContext(ScheduleContext);
+  const { viewMode, setViewMode, setScheduleParams } =
+    useContext(ScheduleContext);
   const [modal, setModal] = useState(false);
+  const navigate = useNavigate();
 
   function selectModeHandler(e) {
     e.preventDefault();
@@ -18,6 +21,18 @@ const MakeScheduleBy = () => {
   function onCancelHandler(e) {
     e.preventDefault();
     setModal(false);
+  }
+
+  function onSubmitHandler(e, formValue) {
+    e.preventDefault();
+    for (let select in formValue) {
+      if (formValue[select] === "" || formValue[select] === undefined) {
+        alert("Заполните все поля формы!");
+        return;
+      }
+    }
+    setScheduleParams(formValue);
+    navigate(`/${viewMode}/schedule`);
   }
 
   return (
@@ -39,7 +54,11 @@ const MakeScheduleBy = () => {
 
         <Modal visible={modal} setVisible={setModal}>
           {viewMode !== "" ? (
-            <FormScheduleBy mode={viewMode} onCancel={onCancelHandler} />
+            <FormScheduleBy
+              mode={viewMode}
+              onSubmit={onSubmitHandler}
+              onCancel={onCancelHandler}
+            />
           ) : null}
         </Modal>
       </div>

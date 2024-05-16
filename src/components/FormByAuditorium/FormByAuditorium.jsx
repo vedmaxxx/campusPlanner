@@ -8,7 +8,7 @@ const initFormValue = {
   auditorium: "",
 };
 
-const FormByAuditorium = ({ submitHandler, onCancel }) => {
+const FormByAuditorium = ({ onSubmit, onCancel }) => {
   const [formValue, setFormValue] = useState(initFormValue);
 
   // функция очистки состояния формы
@@ -28,7 +28,7 @@ const FormByAuditorium = ({ submitHandler, onCancel }) => {
       />
 
       <div className={styles.buttons}>
-        <Button onClick={(e) => submitHandler(e, formValue)}>
+        <Button onClick={(e) => onSubmit(e, formValue)}>
           Перейти к расписанию
         </Button>
         <Button
