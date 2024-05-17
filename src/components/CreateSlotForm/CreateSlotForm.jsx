@@ -5,7 +5,15 @@ import styles from "./CreateSlotForm.module.css";
 import Button from "../UI/Button/Button";
 import ControlledSelect from "../UI/ControlledSelect/ControlledSelect";
 import { ScheduleContext } from "../../context/ScheduleContext";
-import { groupOptions } from "../utils/selectData";
+import {
+  auditoriumOptions,
+  dayOptions,
+  disciplineOptions,
+  groupOptions,
+  teacherOptions,
+  timeOptions,
+  typeOptions,
+} from "../utils/selectData";
 
 const initFormValue = {
   day: "",
@@ -22,7 +30,6 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
   const { viewMode, scheduleParams } = useContext(ScheduleContext);
   const [formValue, setFormValue] = useState(initFormValue);
 
-  const timeOptions = [1, 2, 3, 4, 5, 6, 7, 8];
   let isError = false;
 
   // заглушка
@@ -111,11 +118,7 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
             name={"teacher"}
             onChange={(value) => setFormValue({ ...formValue, teacher: value })}
             value={formValue.teacher}
-            options={[
-              { value: "Иванов И.В.", name: "Иванов И. В." },
-              { value: "Васильев В.В.", name: "Васильев В.В." },
-              { value: "Грачев Г.Г.", name: "Грачев Г.Г." },
-            ]}
+            options={teacherOptions}
           />
         </>
       ) : null}
@@ -128,7 +131,7 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
               setFormValue({ ...formValue, auditorium: value })
             }
             value={formValue.auditorium}
-            options={[{ value: "6-404", name: "6-404" }]}
+            options={auditoriumOptions}
           />
         </>
       ) : null}
@@ -138,14 +141,7 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
         name={"day"}
         onChange={(value) => setFormValue({ ...formValue, day: value })}
         value={formValue.day}
-        options={[
-          { value: "monday", name: "Пн" },
-          { value: "tuesday", name: "Вт" },
-          { value: "wednesday", name: "Ср" },
-          { value: "thursday", name: "Чт" },
-          { value: "friday", name: "Пт" },
-          { value: "saturday", name: "Сб" },
-        ]}
+        options={dayOptions}
       />
 
       <label>Номер пары</label>
@@ -153,10 +149,7 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
         name={"number"}
         onChange={(value) => setFormValue({ ...formValue, number: value })}
         value={formValue.number}
-        options={timeOptions.map((option) => ({
-          value: option,
-          name: `${option} пара ${SLOT_TIME_NUMBER[option]}`,
-        }))}
+        options={timeOptions}
       />
 
       <label>Вид занятия</label>
@@ -164,11 +157,7 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
         name={"type"}
         onChange={(value) => setFormValue({ ...formValue, type: value })}
         value={formValue.type}
-        options={[
-          { value: "lecture", name: "Лекция" },
-          { value: "practice", name: "Практика" },
-          { value: "laboratory", name: "Лабораторная" },
-        ]}
+        options={typeOptions}
       />
 
       <label>Дисциплина</label>
@@ -176,14 +165,7 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
         name={"discipline"}
         onChange={(value) => setFormValue({ ...formValue, discipline: value })}
         value={formValue.discipline}
-        options={[
-          { value: "Программирование", name: "Программирование" },
-          { value: "Философия", name: "Философия" },
-          {
-            value: "Средства вычислительной техники",
-            name: "Средства вычислительной техники",
-          },
-        ]}
+        options={disciplineOptions}
       />
 
       <div className={styles.buttons}>
