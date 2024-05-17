@@ -9,7 +9,7 @@ function App() {
   // состояние режима отображения редактора расписания
   const [viewMode, setViewMode] = useState("");
   // состояние формируемого расписания
-  const [scheduleParams, setScheduleParams] = useState("");
+  const [scheduleParams, setScheduleParams] = useState(null);
 
   useEffect(() => {
     console.log(scheduleParams);

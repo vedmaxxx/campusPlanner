@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { WeekSlotContext } from "../context/WeekSlotContext";
 import Button from "../components/UI/Button/Button";
 import WeekBar from "../components/WeekBar/WeekBar";
@@ -7,12 +7,14 @@ import Modal from "../components/UI/Modal/Modal";
 import EditSlotForm from "../components/EditSlotForm/EditSlotForm";
 import CreateSlotForm from "../components/CreateSlotForm/CreateSlotForm";
 import ModalConfirm from "../components/UI/ModalConfirm/ModalConfirm";
+import { ScheduleContext } from "../context/ScheduleContext";
 
 const ScheduleByTeacher = () => {
+  const { scheduleParams } = useContext(ScheduleContext);
   const [schedule, setSchedule] = useState({
     id: Date.now(),
     semester: 1,
-    teacher: "Иванов И.И.",
+    teacher: scheduleParams?.teacher,
     weeksNumber: 20,
     weeks: [
       {
@@ -302,61 +304,59 @@ const ScheduleByTeacher = () => {
   }, [currentWeekNumber, schedule]);
 
   return (
-    <>
-      <div className="container">
-        <Button onClick={() => setCreateModal(true)}>Создать слот</Button>
+    <div className="container">
+      <Button onClick={() => setCreateModal(true)}>Создать слот</Button>
 
-        <WeekSlotContext.Provider
-          value={{
-            viewMode: "teacher",
-            week: currentWeek,
-            daySlotDate,
-            selectForDelete,
-            selectForEdit,
-          }}
-        >
-          <div className="group_title">Преподаватель {schedule.teacher}</div>
-          <WeekBar
-            maxWeeks={schedule.weeksNumber}
-            number={currentWeekNumber}
-            setNumber={setCurrentWeekNumber}
+      <WeekSlotContext.Provider
+        value={{
+          viewMode: "teacher",
+          week: currentWeek,
+          daySlotDate,
+          selectForDelete,
+          selectForEdit,
+        }}
+      >
+        <div className="page_title">Преподаватель {schedule.teacher}</div>
+        <WeekBar
+          maxWeeks={schedule.weeksNumber}
+          number={currentWeekNumber}
+          setNumber={setCurrentWeekNumber}
+        />
+        <WeekSlot week={currentWeek} />
+
+        <Modal visible={editModal} setVisible={setEditModal}>
+          <EditSlotForm
+            slot={getSelectedSlot()}
+            daySlotDate={daySlotDate}
+            editSlot={handleEditSlot}
+            onCancel={(e) => {
+              e.preventDefault();
+              clearSelectedItems();
+              setEditModal(false);
+            }}
           />
-          <WeekSlot week={currentWeek} />
+        </Modal>
 
-          <Modal visible={editModal} setVisible={setEditModal}>
-            <EditSlotForm
-              slot={getSelectedSlot()}
-              daySlotDate={daySlotDate}
-              editSlot={handleEditSlot}
-              onCancel={(e) => {
-                e.preventDefault();
-                clearSelectedItems();
-                setEditModal(false);
-              }}
-            />
-          </Modal>
-
-          <Modal visible={createModal} setVisible={setCreateModal}>
-            <CreateSlotForm
-              handleCreateSlot={handleCreateSlot}
-              onCancel={(e) => {
-                e.preventDefault();
-                clearSelectedItems();
-                setCreateModal(false);
-              }}
-            />
-          </Modal>
-          <Modal visible={deleteModal} setVisible={setDeleteModal}>
-            <ModalConfirm
-              onSubmit={deleteBtnHandler}
-              onCancel={() => setDeleteModal(false)}
-            >
-              Вы уверены, что хотите удалить слот?
-            </ModalConfirm>
-          </Modal>
-        </WeekSlotContext.Provider>
-      </div>
-    </>
+        <Modal visible={createModal} setVisible={setCreateModal}>
+          <CreateSlotForm
+            handleCreateSlot={handleCreateSlot}
+            onCancel={(e) => {
+              e.preventDefault();
+              clearSelectedItems();
+              setCreateModal(false);
+            }}
+          />
+        </Modal>
+        <Modal visible={deleteModal} setVisible={setDeleteModal}>
+          <ModalConfirm
+            onSubmit={deleteBtnHandler}
+            onCancel={() => setDeleteModal(false)}
+          >
+            Вы уверены, что хотите удалить слот?
+          </ModalConfirm>
+        </Modal>
+      </WeekSlotContext.Provider>
+    </div>
   );
 };
 

@@ -22,7 +22,6 @@ const MakeScheduleBy = () => {
     e.preventDefault();
     setModal(false);
   }
-
   function onSubmitHandler(e, formValue) {
     e.preventDefault();
     for (let select in formValue) {

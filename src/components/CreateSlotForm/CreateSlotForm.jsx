@@ -18,7 +18,6 @@ const initFormValue = {
 const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
   const { week } = useContext(WeekSlotContext);
   const { viewMode } = useContext(ScheduleContext);
-
   const [formValue, setFormValue] = useState(initFormValue);
 
   const timeOptions = [1, 2, 3, 4, 5, 6, 7, 8];

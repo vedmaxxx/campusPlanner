@@ -27,7 +27,10 @@ const FormByTeacher = ({ onSubmit, onCancel }) => {
         name={"teacher"}
         onChange={(value) => setFormValue({ ...formValue, teacher: value })}
         defaultValue={"Преподаватель"}
-        options={[{ value: "Иванов И.И.", name: "Иванов И.И." }]}
+        options={[
+          { value: "Иванов И.И.", name: "Иванов И.И." },
+          { value: "Елисеев И.И.", name: "Елисеев И.И." },
+        ]}
       />
       <label>Учебный план</label>
       <Select
