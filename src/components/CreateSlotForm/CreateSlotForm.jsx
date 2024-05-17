@@ -1,10 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { SLOT_TIME_NUMBER } from "../utils/consts";
 import { WeekSlotContext } from "../../context/WeekSlotContext";
 import styles from "./CreateSlotForm.module.css";
 import Button from "../UI/Button/Button";
 import ControlledSelect from "../UI/ControlledSelect/ControlledSelect";
 import { ScheduleContext } from "../../context/ScheduleContext";
+import { groupOptions } from "../utils/selectData";
 
 const initFormValue = {
   day: "",
@@ -13,11 +14,12 @@ const initFormValue = {
   discipline: "",
   auditorium: "",
   teacher: "",
+  group: "",
 };
 
 const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
   const { week } = useContext(WeekSlotContext);
-  const { viewMode } = useContext(ScheduleContext);
+  const { viewMode, scheduleParams } = useContext(ScheduleContext);
   const [formValue, setFormValue] = useState(initFormValue);
 
   const timeOptions = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -28,17 +30,18 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
     e.preventDefault();
   }
 
+  // функция добавления нового слота в расписание
   function addNewSlot(e) {
     e.preventDefault();
+    console.log(formValue);
     // если хотя бы одно поле в состоянии формы пустое, ставим флаг ошиьки setError(true)
     for (let select in formValue) {
-      if (formValue[select] == "" || formValue[select] == undefined) {
+      if (formValue[select] === "" || formValue[select] === undefined) {
         alert("Заполните все поля формы!");
         isError = true;
         return;
       }
     }
-
     // формируем новый слот-пару
     const newSlot = {
       id: Date.now(),
@@ -48,6 +51,7 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
       discipline: formValue.discipline,
       auditorium: formValue.auditorium,
       teacher: formValue.teacher,
+      group: formValue.group,
     };
 
     // находим нужный слот-день
@@ -56,7 +60,7 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
     );
     // ищем в данном дне новую пару - если пара под этим номером существует, кидаем уведомление
     for (let sl of newDaySlot?.slots) {
-      if (newSlot?.number == sl.number) {
+      if (newSlot?.number === sl.number) {
         alert("Данный слот занят");
         isError = true;
         return;
@@ -73,10 +77,62 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
     setFormValue(initFormValue);
   }
 
+  // заранее помещаем значение выбранной группы/преподавателя/аудитории
+  //  в объект создаваемого слота
+  useEffect(() => {
+    if (scheduleParams !== null) {
+      const temp = { ...formValue };
+      temp[viewMode] = scheduleParams[viewMode];
+      setFormValue(temp);
+      console.log(temp);
+    }
+  }, [scheduleParams, viewMode]);
+
   return (
     <form className={styles.form} method="post" onSubmit={handleSubmit}>
       <h3 className={styles.title}>Создание слота</h3>
       <hr />
+
+      {viewMode !== "group" ? (
+        <>
+          <label>Группа</label>
+          <ControlledSelect
+            name={"group"}
+            onChange={(value) => setFormValue({ ...formValue, group: value })}
+            value={formValue.group}
+            options={groupOptions}
+          />
+        </>
+      ) : null}
+      {viewMode !== "teacher" ? (
+        <>
+          <label>Преподаватель</label>
+          <ControlledSelect
+            name={"teacher"}
+            onChange={(value) => setFormValue({ ...formValue, teacher: value })}
+            value={formValue.teacher}
+            options={[
+              { value: "Иванов И.В.", name: "Иванов И. В." },
+              { value: "Васильев В.В.", name: "Васильев В.В." },
+              { value: "Грачев Г.Г.", name: "Грачев Г.Г." },
+            ]}
+          />
+        </>
+      ) : null}
+      {viewMode !== "auditorium" ? (
+        <>
+          <label>Аудитория</label>
+          <ControlledSelect
+            name={"auditorium"}
+            onChange={(value) =>
+              setFormValue({ ...formValue, auditorium: value })
+            }
+            value={formValue.auditorium}
+            options={[{ value: "6-404", name: "6-404" }]}
+          />
+        </>
+      ) : null}
+
       <label>День недели</label>
       <ControlledSelect
         name={"day"}
@@ -127,26 +183,6 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
             value: "Средства вычислительной техники",
             name: "Средства вычислительной техники",
           },
-        ]}
-      />
-
-      <label>Аудитория</label>
-      <ControlledSelect
-        name={"auditorium"}
-        onChange={(value) => setFormValue({ ...formValue, auditorium: value })}
-        value={formValue.auditorium}
-        options={[{ value: "6-404", name: "6-404" }]}
-      />
-
-      <label>Преподаватель</label>
-      <ControlledSelect
-        name={"teacher"}
-        onChange={(value) => setFormValue({ ...formValue, teacher: value })}
-        value={formValue.teacher}
-        options={[
-          { value: "Иванов И.В.", name: "Иванов И. В." },
-          { value: "Васильев В.В.", name: "Васильев В.В." },
-          { value: "Грачев Г.Г.", name: "Грачев Г.Г." },
         ]}
       />
 

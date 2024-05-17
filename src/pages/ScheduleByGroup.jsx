@@ -14,7 +14,6 @@ import { ScheduleContext } from "../context/ScheduleContext";
 const ScheduleByGroup = () => {
   // на основании scheduleParams будем проводить GET-запросы к серверу
   const { scheduleParams } = useContext(ScheduleContext);
-
   const [schedule, setSchedule] = useState({
     id: Date.now(),
     semester: 1,
@@ -35,7 +34,7 @@ const ScheduleByGroup = () => {
                 type: "practice",
                 discipline: "Программирование",
                 auditorium: "6-204",
-                group: "ПРО-430Б",
+                // group: "ПРО-430Б",
                 teacher: "",
               },
               {
@@ -44,7 +43,7 @@ const ScheduleByGroup = () => {
                 type: "lecture",
                 discipline: "Философия",
                 auditorium: "6-202",
-                group: "ПРО-430Б",
+                // group: "ПРО-430Б",
                 teacher: "",
               },
               {
@@ -53,7 +52,7 @@ const ScheduleByGroup = () => {
                 type: "practice",
                 discipline: "Программирование",
                 auditorium: "6-204",
-                group: "ПРО-430Б",
+                // group: "ПРО-430Б",
                 teacher: "",
               },
             ],
@@ -69,7 +68,7 @@ const ScheduleByGroup = () => {
                 type: "practice",
                 discipline: "Программирование",
                 auditorium: "6-204",
-                group: "ПРО-430Б",
+                // group: "ПРО-430Б",
                 teacher: "",
               },
               {
@@ -78,7 +77,7 @@ const ScheduleByGroup = () => {
                 type: "lecture",
                 discipline: "Философия",
                 auditorium: "6-202",
-                group: "ПРО-430Б",
+                // group: "ПРО-430Б",
                 teacher: "",
               },
               {
@@ -87,7 +86,7 @@ const ScheduleByGroup = () => {
                 type: "practice",
                 discipline: "Программирование",
                 auditorium: "6-204",
-                group: "ПРО-430Б",
+                // group: "ПРО-430Б",
                 teacher: "",
               },
             ],
@@ -136,7 +135,7 @@ const ScheduleByGroup = () => {
                 type: "lecture",
                 discipline: "Философия",
                 auditorium: "6-202",
-                group: "ПРО-430Б",
+                // group: "ПРО-430Б",
                 teacher: "",
               },
               {
@@ -146,7 +145,7 @@ const ScheduleByGroup = () => {
                 type: "practice",
                 discipline: "Программирование",
                 auditorium: "6-204",
-                group: "ПРО-430Б",
+                // group: "ПРО-430Б",
                 teacher: "",
               },
             ],
@@ -162,7 +161,7 @@ const ScheduleByGroup = () => {
                 type: "practice",
                 discipline: "Программирование",
                 auditorium: "6-204",
-                group: "ПРО-430Б",
+                // group: "ПРО-430Б",
                 teacher: "",
               },
               {
@@ -172,7 +171,7 @@ const ScheduleByGroup = () => {
                 type: "lecture",
                 discipline: "Философия",
                 auditorium: "6-202",
-                group: "ПРО-430Б",
+                // group: "ПРО-430Б",
                 teacher: "",
               },
               {
@@ -182,7 +181,7 @@ const ScheduleByGroup = () => {
                 type: "practice",
                 discipline: "Программирование",
                 auditorium: "6-204",
-                group: "ПРО-430Б",
+                // group: "ПРО-430Б",
                 teacher: "",
               },
             ],

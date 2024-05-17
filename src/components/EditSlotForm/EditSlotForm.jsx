@@ -1,34 +1,31 @@
 import React, { useContext, useEffect, useState } from "react";
 import { WeekSlotContext } from "../../context/WeekSlotContext";
-import { SUBJECT_TYPES } from "../utils/consts";
 import styles from "./EditSlotForm.module.css";
-import Select from "../UI/Select/Select";
 import Button from "../UI/Button/Button";
 import ControlledSelect from "../UI/ControlledSelect/ControlledSelect";
+import { ScheduleContext } from "../../context/ScheduleContext";
+import {
+  auditoriumOptions,
+  disciplineOptions,
+  groupOptions,
+  teacherOptions,
+  typeOptions,
+} from "../utils/selectData";
 
 const initFormValue = {
   type: "",
   discipline: "",
   auditorium: "",
   teacher: "",
+  group: "",
 };
 
 const EditSlotForm = ({ slot, editSlot, onCancel }) => {
   const { week, daySlotDate } = useContext(WeekSlotContext);
-
+  const { viewMode, scheduleParams } = useContext(ScheduleContext);
   const [formValue, setFormValue] = useState(initFormValue);
-  let isError = false;
 
-  // доступ к первоначальным данным слота внутри select? (сделать +1 option?)
-  useEffect(() => {
-    setFormValue({
-      ...formValue,
-      type: slot?.type,
-      discipline: slot?.discipline,
-      auditorium: slot?.auditorium,
-      teacher: slot?.teacher,
-    });
-  }, [slot]);
+  let isError = false;
 
   function clearForm() {
     setFormValue(initFormValue);
@@ -39,7 +36,7 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
 
     // если хотя бы одно поле в состоянии формы пустое, ставим флаг ошиьки setError(true)
     for (let select in formValue) {
-      if (formValue[select] == "" || formValue[select] == undefined) {
+      if (formValue[select] === "" || formValue[select] === undefined) {
         alert("Заполните все поля формы!");
         isError = true;
         return;
@@ -54,6 +51,21 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
     isError = false;
   }
 
+  useEffect(() => {
+    const value = {
+      ...formValue,
+      type: slot?.type,
+      discipline: slot?.discipline,
+      auditorium: slot?.auditorium,
+      teacher: slot?.teacher,
+      group: slot?.group,
+    };
+    if (scheduleParams !== null) {
+      value[viewMode] = scheduleParams[viewMode];
+    }
+    setFormValue(value);
+  }, [slot, scheduleParams]);
+
   return (
     <form className={styles.form}>
       <h3 className={styles.title}>Редактирование слота</h3>
@@ -63,48 +75,53 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
         name={"type"}
         onChange={(value) => setFormValue({ ...formValue, type: value })}
         value={formValue.type}
-        options={[
-          { value: "lecture", name: "Лекция" },
-          { value: "practice", name: "Практика" },
-          { value: "laboratory", name: "Лабораторная" },
-        ]}
+        options={typeOptions}
       />
       <label>Дисциплина</label>
       <ControlledSelect
         name={"discipline"}
         onChange={(value) => setFormValue({ ...formValue, discipline: value })}
         value={formValue.discipline}
-        options={[
-          { value: "Программирование", name: "Программирование" },
-          { value: "Философия", name: "Философия" },
-          {
-            value: "Средства вычислительной техники",
-            name: "Средства вычислительной техники",
-          },
-        ]}
+        options={disciplineOptions}
       />
 
-      <label>Аудитория</label>
-      <ControlledSelect
-        name={"auditorium"}
-        onChange={(value) => setFormValue({ ...formValue, auditorium: value })}
-        value={formValue.auditorium}
-        options={[
-          { value: "4-513", name: "4-513" },
-          { value: "4-515", name: "4-515" },
-        ]}
-      />
-      <label>Преподаватель</label>
-      <ControlledSelect
-        name={"teacher"}
-        onChange={(value) => setFormValue({ ...formValue, teacher: value })}
-        value={formValue.teacher}
-        options={[
-          { value: "Иванов И.В.", name: "Иванов И. В." },
-          { value: "Васильев В.В.", name: "Васильев В.В." },
-          { value: "Грачев Г.Г.", name: "Грачев Г.Г." },
-        ]}
-      />
+      {viewMode !== "auditorium" ? (
+        <>
+          <label>Аудитория</label>
+          <ControlledSelect
+            name={"auditorium"}
+            onChange={(value) =>
+              setFormValue({ ...formValue, auditorium: value })
+            }
+            value={formValue.auditorium}
+            options={auditoriumOptions}
+          />
+        </>
+      ) : null}
+
+      {viewMode !== "teacher" ? (
+        <>
+          <label>Преподаватель</label>
+          <ControlledSelect
+            name={"teacher"}
+            onChange={(value) => setFormValue({ ...formValue, teacher: value })}
+            value={formValue.teacher}
+            options={teacherOptions}
+          />
+        </>
+      ) : null}
+      {viewMode !== "group" ? (
+        <>
+          <label>Группа</label>
+          <ControlledSelect
+            name={"group"}
+            onChange={(value) => setFormValue({ ...formValue, group: value })}
+            value={formValue.group}
+            options={groupOptions}
+          />
+        </>
+      ) : null}
+
       <div className={styles.buttons}>
         <Button
           onClick={(e) => {
