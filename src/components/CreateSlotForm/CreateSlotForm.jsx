@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import { SLOT_TIME_NUMBER } from "../utils/consts";
 import { WeekSlotContext } from "../../context/WeekSlotContext";
 import styles from "./CreateSlotForm.module.css";
 import Button from "../UI/Button/Button";

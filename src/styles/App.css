@@ -1,3 +1,6 @@
+html {
+  scrollbar-gutter: stable both-side;
+}
 * {
   margin: 0;
   padding: 0;

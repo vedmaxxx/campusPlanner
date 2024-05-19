@@ -9,11 +9,9 @@ import CreateSlotForm from "../components/CreateSlotForm/CreateSlotForm";
 import EditSlotForm from "../components/EditSlotForm/EditSlotForm";
 import { ScheduleContext } from "../context/ScheduleContext";
 
-// будет приходить объект с данными о группе, семестре, учебном плане и т.д.,
-// по этому объекту потом будет GET-запрос на вытягивание расписания и работа с ним
-const ScheduleByGroup = () => {
-  // на основании scheduleParams будем проводить GET-запросы к серверу
+const useScheduleState = () => {
   const { scheduleParams } = useContext(ScheduleContext);
+
   const [schedule, setSchedule] = useState({
     id: Date.now(),
     semester: 1,
@@ -222,15 +220,6 @@ const ScheduleByGroup = () => {
     schedule.weeks[currentWeekNumber]
   );
 
-  // выбранные день-слот и ID пары-слота
-  const [daySlotDate, setDaySlotDate] = useState(null);
-  const [selectedSlotId, setSelectedSlotId] = useState(-1);
-
-  // состояния модальных окон
-  const [createModal, setCreateModal] = useState(false);
-  const [deleteModal, setDeleteModal] = useState(false);
-  const [editModal, setEditModal] = useState(false);
-
   // помещает исправленные слоты в массив schedule и состояние currentWeek
   function handleSlotsChanges(daySlot, slots) {
     const newDaySlot = { ...daySlot, slots: slots };
@@ -263,6 +252,41 @@ const ScheduleByGroup = () => {
     const newSlots = dayslot.slots.map((sl) => (sl.id === slot.id ? slot : sl));
     handleSlotsChanges(dayslot, newSlots);
   }
+
+  return {
+    schedule,
+    currentWeek,
+    currentWeekNumber,
+    handleCreateSlot,
+    handleDeleteSlot,
+    handleEditSlot,
+    setCurrentWeek,
+    setCurrentWeekNumber,
+  };
+};
+
+// будет приходить объект с данными о группе, семестре, учебном плане и т.д.,
+// по этому объекту потом будет GET-запрос на вытягивание расписания и работа с ним
+const ScheduleByGroup = () => {
+  const {
+    schedule,
+    currentWeek,
+    currentWeekNumber,
+    handleCreateSlot,
+    handleDeleteSlot,
+    handleEditSlot,
+    setCurrentWeekNumber,
+    setCurrentWeek,
+  } = useScheduleState();
+
+  // выбранные день-слот и ID пары-слота
+  const [daySlotDate, setDaySlotDate] = useState(null);
+  const [selectedSlotId, setSelectedSlotId] = useState(-1);
+
+  // состояния модальных окон
+  const [createModal, setCreateModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
 
   // запоминаем слот и на какой день нужно удалить, открываем окно удаления
   function selectForDelete(slot_id, date) {
