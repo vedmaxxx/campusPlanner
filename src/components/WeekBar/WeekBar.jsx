@@ -1,26 +1,28 @@
-import React from "react";
+import React, { useContext } from "react";
 import styles from "./WeekBar.module.css";
 import Button from "../UI/Button/Button";
+import { WeekSlotContext } from "../../context/WeekSlotContext";
 
-const WeekBar = ({ number, setNumber, maxWeeks }) => {
+const WeekBar = () => {
+  const {
+    decrementWeekNumber,
+    incrementWeekNumber,
+    currentWeekNumber,
+    maxWeeks,
+  } = useContext(WeekSlotContext);
+
   return (
     <div className={styles.week_wrapper}>
       <Button
-        disabled={number - 1 == 0 ? true : false}
-        onClick={() => {
-          const newNumber = number - 1;
-          if (newNumber > 0) setNumber(newNumber);
-        }}
+        disabled={currentWeekNumber - 1 === 0 ? true : false}
+        onClick={decrementWeekNumber}
       >
         Предыдущая
       </Button>
-      <div className={styles.week}>{number} нед.</div>
+      <div className={styles.week}>{currentWeekNumber} нед.</div>
       <Button
-        disabled={number == maxWeeks ? true : false}
-        onClick={() => {
-          const newNumber = number + 1;
-          if (newNumber <= maxWeeks) setNumber(newNumber);
-        }}
+        disabled={currentWeekNumber === maxWeeks ? true : false}
+        onClick={incrementWeekNumber}
       >
         Следующая
       </Button>

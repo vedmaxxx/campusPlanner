@@ -18,13 +18,13 @@ const FormByAuditorium = ({ onSubmit, onCancel }) => {
 
   return (
     <form className={styles.form}>
-      <FormHeader>Расписание группы</FormHeader>
+      <FormHeader>Расписание аудитории</FormHeader>
       <label>Номер аудитории</label>
       <Select
         name={"auditorium"}
         onChange={(value) => setFormValue({ ...formValue, auditorium: value })}
         defaultValue={"Аудитория"}
-        options={[{ value: "Иванов И.И.", name: "Иванов И.И." }]}
+        options={[{ value: "7-415", name: "7-415" }]}
       />
 
       <div className={styles.buttons}>

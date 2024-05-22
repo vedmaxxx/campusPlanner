@@ -20,10 +20,13 @@ const initFormValue = {
   group: "",
 };
 
-const EditSlotForm = ({ slot, editSlot, onCancel }) => {
-  const { week, daySlotDate } = useContext(WeekSlotContext);
+const EditSlotForm = ({ onSubmit, onCancel }) => {
   const { viewMode, scheduleParams } = useContext(ScheduleContext);
+  const { selectedSlotId, daySlotDate, currentWeek, getSlotById } =
+    useContext(WeekSlotContext);
   const [formValue, setFormValue] = useState(initFormValue);
+
+  const slot = getSlotById(selectedSlotId, daySlotDate, currentWeek?.number);
 
   let isError = false;
 
@@ -42,12 +45,14 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
         return;
       }
     }
-
-    const daySlot = week.dayslots.find(
-      (dayslot) => dayslot.date === daySlotDate
+    // находим слот-день
+    const daySlot = currentWeek?.dayslots.find(
+      (dayslot) => dayslot?.date === daySlotDate
     );
+    // записываем в новый слот все значения с формы
     const newSlot = { ...slot, ...formValue };
-    editSlot(daySlot, newSlot);
+
+    onSubmit(newSlot);
     isError = false;
   }
 
@@ -136,6 +141,7 @@ const EditSlotForm = ({ slot, editSlot, onCancel }) => {
         </Button>
         <Button
           onClick={(e) => {
+            e.preventDefault();
             onCancel(e);
             clearForm();
           }}

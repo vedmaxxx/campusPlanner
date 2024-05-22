@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./DaySlot.module.css";
-import { dataTransform, getDayWeek } from "../utils/date";
+import { dataTransform, getDayWeekFormatted } from "../utils/date";
 import { MAX_SLOTS_PER_DAY } from "../utils/consts";
 import DaySlotItem from "../DaySlotItem/DaySlotItem";
 
@@ -19,7 +19,7 @@ function createDaySlot(slots) {
 const DaySlot = ({ daySlot }) => {
   return (
     <div className={styles.dayslot}>
-      <h1 className={styles.day}>{getDayWeek(daySlot.date)}</h1>
+      <h1 className={styles.day}>{getDayWeekFormatted(daySlot.date)}</h1>
       <h2 className={styles.date}>{dataTransform(daySlot.date)}</h2>
 
       {createDaySlot(daySlot.slots).map((slot) => (

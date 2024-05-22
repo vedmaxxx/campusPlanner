@@ -5,9 +5,11 @@ import { faPenToSquare, faTrashAlt } from "@fortawesome/free-regular-svg-icons";
 import IconBtn from "../UI/IconBtn/IconBtn";
 import styles from "./SubjectSlot.module.css";
 import cx from "classnames";
+import { ScheduleContext } from "../../context/ScheduleContext";
 
 const SubjectSlot = ({ subjectSlot, date }) => {
-  const { selectForDelete, selectForEdit, viewMode } =
+  const { viewMode } = useContext(ScheduleContext);
+  const { setDeleteModal, setEditModal, selectSlots } =
     useContext(WeekSlotContext);
 
   return (
@@ -29,14 +31,16 @@ const SubjectSlot = ({ subjectSlot, date }) => {
         <div className={styles.footer}>
           <IconBtn
             onClick={() => {
-              selectForEdit(subjectSlot.id, date);
+              selectSlots(subjectSlot.id, date);
+              setEditModal(true);
             }}
             icon={faPenToSquare}
             style={{ color: "blue" }}
           />
           <IconBtn
             onClick={() => {
-              selectForDelete(subjectSlot.id, date);
+              selectSlots(subjectSlot.id, date);
+              setDeleteModal(true);
             }}
             icon={faTrashAlt}
             style={{ color: "red" }}

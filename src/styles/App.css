@@ -52,3 +52,8 @@ hr {
   top: 0;
   right: 0;
 }
+
+.toolbar {
+  display: flex;
+  gap: 20px;
+}

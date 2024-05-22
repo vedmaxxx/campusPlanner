@@ -8,6 +8,8 @@ import WeekSlot from "../components/WeekSlot/WeekSlot";
 import CreateSlotForm from "../components/CreateSlotForm/CreateSlotForm";
 import EditSlotForm from "../components/EditSlotForm/EditSlotForm";
 import { ScheduleContext } from "../context/ScheduleContext";
+import scheduleStore from "../stores/scheduleStore";
+import { observer } from "mobx-react-lite";
 
 const useScheduleState = () => {
   const { scheduleParams } = useContext(ScheduleContext);
@@ -240,6 +242,7 @@ const useScheduleState = () => {
   // обработчик создания слота-пары
   function handleCreateSlot(dayslot, slot) {
     const newSlots = [...dayslot?.slots, slot];
+
     handleSlotsChanges(dayslot, newSlots);
   }
   // обработчик удаления слота-пары
@@ -267,7 +270,7 @@ const useScheduleState = () => {
 
 // будет приходить объект с данными о группе, семестре, учебном плане и т.д.,
 // по этому объекту потом будет GET-запрос на вытягивание расписания и работа с ним
-const ScheduleByGroup = () => {
+const ScheduleByGroup = observer(() => {
   const {
     schedule,
     currentWeek,
@@ -288,6 +291,8 @@ const ScheduleByGroup = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
 
+  const { getSchedule, createSlot, deleteSlot } = scheduleStore;
+
   // запоминаем слот и на какой день нужно удалить, открываем окно удаления
   function selectForDelete(slot_id, date) {
     setDaySlotDate(date);
@@ -307,6 +312,7 @@ const ScheduleByGroup = () => {
       (dayslot) => dayslot.date === daySlotDate
     );
     handleDeleteSlot(dayslot, selectedSlotId);
+
     setDeleteModal(false);
   }
 
@@ -384,6 +390,5 @@ const ScheduleByGroup = () => {
       </WeekSlotContext.Provider>
     </div>
   );
-};
-
+});
 export default ScheduleByGroup;

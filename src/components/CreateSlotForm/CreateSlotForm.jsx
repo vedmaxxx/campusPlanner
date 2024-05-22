@@ -24,17 +24,12 @@ const initFormValue = {
   group: "",
 };
 
-const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
-  const { week } = useContext(WeekSlotContext);
+const CreateSlotForm = ({ onSubmit, onCancel }) => {
+  const { currentWeek } = useContext(WeekSlotContext);
   const { viewMode, scheduleParams } = useContext(ScheduleContext);
   const [formValue, setFormValue] = useState(initFormValue);
 
   let isError = false;
-
-  // заглушка
-  function handleSubmit(e) {
-    e.preventDefault();
-  }
 
   // функция добавления нового слота в расписание
   function addNewSlot(e) {
@@ -59,9 +54,8 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
       teacher: formValue.teacher,
       group: formValue.group,
     };
-
     // находим нужный слот-день
-    const newDaySlot = week.dayslots.find(
+    const newDaySlot = currentWeek.dayslots.find(
       (daySlot) => daySlot.day === formValue.day
     );
     // ищем в данном дне новую пару - если пара под этим номером существует, кидаем уведомление
@@ -72,9 +66,8 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
         return;
       }
     }
-
-    // вызываем функцию добавления слота-пары в состояние расписания
-    handleCreateSlot(newDaySlot, newSlot);
+    // создаем объект в расписании
+    onSubmit(newSlot, newDaySlot.date, currentWeek.number);
     isError = false;
   }
 
@@ -90,12 +83,11 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
       const temp = { ...formValue };
       temp[viewMode] = scheduleParams[viewMode];
       setFormValue(temp);
-      console.log(temp);
     }
-  }, [scheduleParams, viewMode]);
+  }, [scheduleParams, viewMode, currentWeek]);
 
   return (
-    <form className={styles.form} method="post" onSubmit={handleSubmit}>
+    <form className={styles.form}>
       <h3 className={styles.title}>Создание слота</h3>
       <hr />
 

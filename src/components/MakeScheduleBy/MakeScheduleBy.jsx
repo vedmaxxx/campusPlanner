@@ -31,7 +31,7 @@ const MakeScheduleBy = () => {
       }
     }
     setScheduleParams(formValue);
-    navigate(`/${viewMode}/schedule`);
+    navigate(`/schedule/${viewMode}`);
   }
 
   return (

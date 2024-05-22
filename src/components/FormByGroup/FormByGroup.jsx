@@ -3,6 +3,7 @@ import Select from "../UI/Select/Select";
 import FormHeader from "../UI/FormHeader/FormHeader";
 import styles from "./FormByGroup.module.css";
 import Button from "../UI/Button/Button";
+import { groupOptions } from "../utils/selectData";
 
 const initFormValue = {
   group: "",
@@ -27,12 +28,7 @@ const FormByGroup = ({ onSubmit, onCancel }) => {
         name={"group"}
         onChange={(value) => setFormValue({ ...formValue, group: value })}
         defaultValue={"Группа"}
-        options={[
-          { value: "ПРО-430Б", name: "ПРО-430Б" },
-          { value: "ПРО-431Б", name: "ПРО-431Б" },
-          { value: "ПРО-432Б", name: "ПРО-432Б" },
-          { value: "ПРО-433Б", name: "ПРО-433Б" },
-        ]}
+        options={groupOptions}
       />
       <label>Учебный план</label>
       <Select
