@@ -11,36 +11,46 @@ import { ScheduleContext } from "../context/ScheduleContext";
 import { observer } from "mobx-react-lite";
 import currentScheduleStore from "../stores/currentScheduleStore";
 
-// будет приходить объект с данными о группе, семестре, учебном плане и т.д.,
-// по этому объекту потом будет GET-запрос на вытягивание расписания и работа с ним
-const ScheduleByGroup = observer(() => {
-  const { scheduleParams, viewMode, findScheduleByGroup } =
+// Страница с понедельным выводом расписания и возможностью управления слотами
+const ScheduleByStore = observer(() => {
+  const { scheduleParams, viewMode, findScheduleByGroup, findWeeksForTeacher } =
     useContext(ScheduleContext);
   const {
-    currentWeek,
     currentWeekNumber,
-    maxWeeks,
     schedule,
-    setCurrentSchedule,
+    setSchedule,
+    getCurrentWeek,
+    getMaxWeeks,
     decrementWeekNumber,
     incrementWeekNumber,
     createSlot,
     deleteSlot,
     editSlot,
+    getWeeks,
+    setWeeks,
     getSlotById,
+    setCurrentWeekNumber,
   } = currentScheduleStore;
 
-  // setCurrentSchedule({ ...schedule, group: scheduleParams.group });
-  // console.log(first);
+  // отладка номера выбранной недели
+  // autorun(() => {
+  //   console.log(currentWeekNumber);
+  // });
+
+  // получение объектов текущей недели и максимального количества недель в расписании
+  const currentWeek = getCurrentWeek();
+  const maxWeeks = getMaxWeeks();
+
   // выбранные день-слот и ID пары-слота
   const [daySlotDate, setDaySlotDate] = useState(new Date());
   const [selectedSlotId, setSelectedSlotId] = useState(-1);
-  console.log(schedule);
 
-  // // состояния модальных окон
+  // состояния модальных окон
   const [createModal, setCreateModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
+
+  const [title, setTitle] = useState("");
 
   function createBtnHandler(slot_id, dayslot_date, week_number) {
     createSlot(slot_id, dayslot_date, week_number);
@@ -64,33 +74,29 @@ const ScheduleByGroup = observer(() => {
     setSelectedSlotId(-1);
     setDaySlotDate(new Date());
   }
-  function saveBtnHandler(e) {
-    e.preventDefault();
-  }
 
+  // хук для загрузки уже существующего расписания по выбранным параметрам
+  //  из глобального хранилища расписаний в состояние текущего расписания
   useEffect(() => {
-    const sched = findScheduleByGroup(scheduleParams.group, 2, 1);
-    console.log(sched);
-    if (sched) setCurrentSchedule(sched);
-  }, [scheduleParams, viewMode, schedule]);
+    console.log(scheduleParams.mode);
+  }, [scheduleParams]);
 
   return (
     <div className="container">
       <div className="page_title">
-        {viewMode === "group" ? (
-          <div>Учебная группа {scheduleParams?.group}</div>
+        {scheduleParams.mode === "group" ? (
+          <div>Учебная группа {scheduleParams?.current.group}</div>
         ) : null}
-        {viewMode === "teacher" ? (
+        {scheduleParams.mode === "teacher" ? (
           <div>Преподаватель {scheduleParams?.teacher}</div>
         ) : null}
-        {viewMode === "auditorium" ? (
-          <div>Аудитория {scheduleParams?.auditorium}</div>
+        {scheduleParams.mode === "auditorium" ? (
+          <div>Аудитория{scheduleParams?.auditorium}</div>
         ) : null}
       </div>
 
       <div className="toolbar">
         <Button onClick={() => setCreateModal(true)}>Создать слот</Button>
-        <Button onClick={saveBtnHandler}>Сохранить расписание</Button>
       </div>
 
       <WeekSlotContext.Provider
@@ -106,6 +112,7 @@ const ScheduleByGroup = observer(() => {
           setEditModal,
           selectSlots,
           getSlotById,
+          setCurrentWeekNumber,
         }}
       >
         <WeekBar />
@@ -147,4 +154,4 @@ const ScheduleByGroup = observer(() => {
     </div>
   );
 });
-export default ScheduleByGroup;
+export default ScheduleByStore;

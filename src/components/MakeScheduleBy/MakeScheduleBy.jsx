@@ -30,7 +30,8 @@ const MakeScheduleBy = () => {
         return;
       }
     }
-    setScheduleParams(formValue);
+    setScheduleParams({ current: { ...formValue }, mode: viewMode });
+    console.log(formValue);
     navigate(`/schedule/${viewMode}`);
   }
 

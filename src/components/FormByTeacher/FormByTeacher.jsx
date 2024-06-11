@@ -1,36 +1,53 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "../UI/Select/Select";
 import Button from "../UI/Button/Button";
 import FormHeader from "../UI/FormHeader/FormHeader";
 import styles from "./FormByTeacher.module.css";
+import teacherStore from "../../stores/teacherStore";
+import { observer } from "mobx-react-lite";
 
 const initFormValue = {
   teacher: "",
   faculty: "",
   department: "",
   curricilium: "",
+  semester: "",
 };
 
-const FormByTeacher = ({ onSubmit, onCancel }) => {
+const FormByTeacher = observer(({ onSubmit, onCancel }) => {
   const [formValue, setFormValue] = useState(initFormValue);
+  const { teachers, fetchTeachers } = teacherStore;
 
-  // функция очистки состояния формы
   function clearForm() {
     setFormValue(initFormValue);
   }
 
+  useEffect(() => {
+    fetchTeachers();
+  }, []);
+
   return (
     <form className={styles.form}>
       <FormHeader>Расписание преподавателя</FormHeader>
+      <label>Семестр</label>
+      <Select
+        name={"semester"}
+        onChange={(value) => setFormValue({ ...formValue, semester: value })}
+        defaultValue={"Семестр"}
+        options={[
+          { value: 1, name: "1 Осенний" },
+          { value: 2, name: "2 Весенний" },
+        ]}
+      />
       <label>ФИО преподавателя</label>
       <Select
         name={"teacher"}
         onChange={(value) => setFormValue({ ...formValue, teacher: value })}
         defaultValue={"Преподаватель"}
-        options={[
-          { value: "Иванов И.И.", name: "Иванов И.И." },
-          { value: "Елисеев И.И.", name: "Елисеев И.И." },
-        ]}
+        options={teachers?.map((teacher) => ({
+          value: teacher.id,
+          name: `${teacher.surname} ${teacher.name} ${teacher.patronymic}`,
+        }))}
       />
       <label>Учебный план</label>
       <Select
@@ -80,6 +97,6 @@ const FormByTeacher = ({ onSubmit, onCancel }) => {
       </div>
     </form>
   );
-};
+});
 
 export default FormByTeacher;

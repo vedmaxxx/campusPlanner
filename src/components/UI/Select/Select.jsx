@@ -12,7 +12,7 @@ const Select = ({ options, defaultValue, value, onChange }) => {
       <option disabled value={"DEFAULT"}>
         {defaultValue}
       </option>
-      {options.map((option) => (
+      {options?.map((option) => (
         <option key={option.value} value={option.value}>
           {option.name}
         </option>

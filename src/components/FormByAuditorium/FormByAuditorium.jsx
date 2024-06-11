@@ -1,30 +1,57 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "../UI/Select/Select";
 import FormHeader from "../UI/FormHeader/FormHeader";
 import styles from "./FormByAuditorium.module.css";
 import Button from "../UI/Button/Button";
+import auditoriumStore from "../../stores/auditoriumStore";
+import { observer } from "mobx-react-lite";
+import axios from "axios";
 
 const initFormValue = {
-  auditorium: "",
+  auditorium: { value: "", name: "" },
+  semester: { value: "", name: "" },
 };
 
-const FormByAuditorium = ({ onSubmit, onCancel }) => {
+const FormByAuditorium = observer(({ onSubmit, onCancel }) => {
   const [formValue, setFormValue] = useState(initFormValue);
+  const { auditoriums, fetchAuditoriums } = auditoriumStore;
 
-  // функция очистки состояния формы
+  const [auds, setAuds] = useState([]);
+
   function clearForm() {
     setFormValue(initFormValue);
   }
 
+  useEffect(() => {
+    fetchAuditoriums();
+  }, []);
+
   return (
     <form className={styles.form}>
       <FormHeader>Расписание аудитории</FormHeader>
+      <label>Семестр</label>
+      {auds?.map((aud) => (
+        <div>{aud?.number}</div>
+      ))}
+
+      <Select
+        name={"semester"}
+        onChange={(value) => setFormValue({ ...formValue, semester: value })}
+        defaultValue={"Семестр"}
+        options={[
+          { value: 1, name: "1 Осенний" },
+          { value: 2, name: "2 Весенний" },
+        ]}
+      />
       <label>Номер аудитории</label>
       <Select
         name={"auditorium"}
         onChange={(value) => setFormValue({ ...formValue, auditorium: value })}
         defaultValue={"Аудитория"}
-        options={[{ value: "7-415", name: "7-415" }]}
+        options={auditoriums.map((aud) => ({
+          value: aud.id,
+          name: aud.number,
+        }))}
       />
 
       <div className={styles.buttons}>
@@ -42,6 +69,6 @@ const FormByAuditorium = ({ onSubmit, onCancel }) => {
       </div>
     </form>
   );
-};
+});
 
 export default FormByAuditorium;

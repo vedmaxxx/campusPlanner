@@ -1,5 +1,6 @@
 import { makeAutoObservable } from "mobx";
 
+// глобальное хранилище всех расписаний
 class GlobalScheduleStore {
   schedulesList = [];
 
@@ -293,7 +294,7 @@ class GlobalScheduleStore {
       {
         id: crypto.randomUUID(),
         curricilium: 1,
-        semester: 1,
+        semester: 2,
         group: "ПРО-433Б",
         weeksNumber: 21,
       },
@@ -304,6 +305,7 @@ class GlobalScheduleStore {
     this.schedulesList = list;
   };
 
+  // поиск объекта расписания по указанным параметрам в глобальном хранилище расписаний
   findScheduleByGroup = (group, semester, curricilium) => {
     const sched = this.schedulesList.find(
       (schedule) =>
@@ -311,7 +313,6 @@ class GlobalScheduleStore {
         schedule.semester === semester &&
         schedule.curricilium === curricilium
     );
-    console.log(sched);
     return sched;
   };
 }

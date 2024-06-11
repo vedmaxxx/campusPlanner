@@ -29,6 +29,7 @@ const CreateSlotForm = ({ onSubmit, onCancel }) => {
   const { viewMode, scheduleParams } = useContext(ScheduleContext);
   const [formValue, setFormValue] = useState(initFormValue);
 
+  const [isOptionsEmpty, setIsOptionsEmpty] = useState(false);
   let isError = false;
 
   // функция добавления нового слота в расписание
@@ -43,6 +44,7 @@ const CreateSlotForm = ({ onSubmit, onCancel }) => {
         return;
       }
     }
+
     // формируем новый слот-пару
     const newSlot = {
       id: Date.now(),
@@ -86,102 +88,141 @@ const CreateSlotForm = ({ onSubmit, onCancel }) => {
     }
   }, [scheduleParams, viewMode, currentWeek]);
 
+  // проверка на пустые options
+  useEffect(() => {
+    if (
+      auditoriumOptions.length === 0 ||
+      dayOptions.length === 0 ||
+      disciplineOptions.length === 0 ||
+      groupOptions.length === 0 ||
+      teacherOptions.length === 0 ||
+      timeOptions.length === 0 ||
+      typeOptions.length === 0
+    )
+      setIsOptionsEmpty(true);
+    else setIsOptionsEmpty(false);
+  }, []);
+
   return (
     <form className={styles.form}>
-      <h3 className={styles.title}>Создание слота</h3>
-      <hr />
-
-      {viewMode !== "group" ? (
-        <>
-          <label>Группа</label>
-          <ControlledSelect
-            name={"group"}
-            onChange={(value) => setFormValue({ ...formValue, group: value })}
-            value={formValue.group}
-            options={groupOptions}
-          />
-        </>
-      ) : null}
-      {viewMode !== "teacher" ? (
-        <>
-          <label>Преподаватель</label>
-          <ControlledSelect
-            name={"teacher"}
-            onChange={(value) => setFormValue({ ...formValue, teacher: value })}
-            value={formValue.teacher}
-            options={teacherOptions}
-          />
-        </>
-      ) : null}
-      {viewMode !== "auditorium" ? (
-        <>
-          <label>Аудитория</label>
-          <ControlledSelect
-            name={"auditorium"}
-            onChange={(value) =>
-              setFormValue({ ...formValue, auditorium: value })
-            }
-            value={formValue.auditorium}
-            options={auditoriumOptions}
-          />
-        </>
-      ) : null}
-
-      <label>День недели</label>
-      <ControlledSelect
-        name={"day"}
-        onChange={(value) => setFormValue({ ...formValue, day: value })}
-        value={formValue.day}
-        options={dayOptions}
-      />
-
-      <label>Номер пары</label>
-      <ControlledSelect
-        name={"number"}
-        onChange={(value) => setFormValue({ ...formValue, number: value })}
-        value={formValue.number}
-        options={timeOptions}
-      />
-
-      <label>Вид занятия</label>
-      <ControlledSelect
-        name={"type"}
-        onChange={(value) => setFormValue({ ...formValue, type: value })}
-        value={formValue.type}
-        options={typeOptions}
-      />
-
-      <label>Дисциплина</label>
-      <ControlledSelect
-        name={"discipline"}
-        onChange={(value) => setFormValue({ ...formValue, discipline: value })}
-        value={formValue.discipline}
-        options={disciplineOptions}
-      />
-
-      <div className={styles.buttons}>
-        <Button
-          // если ошибки не было, после добавления элемента очищаем форму и выходим из модалки
-          onClick={(e) => {
-            addNewSlot(e);
-            if (!isError) {
+      {isOptionsEmpty ? (
+        <div className={styles.is_options_empty}>
+          <div>
+            Варианты выбора в форме были загружены неверно. Обратитесь к
+            администратору.
+          </div>
+          <Button
+            onClick={(e) => {
               onCancel(e);
-              clearForm();
+            }}
+          >
+            Закрыть
+          </Button>
+        </div>
+      ) : (
+        <>
+          <h3 className={styles.title}>Создание слота</h3>
+          <hr />
+
+          {viewMode !== "group" ? (
+            <>
+              <label>Группа</label>
+              <ControlledSelect
+                name={"group"}
+                onChange={(value) =>
+                  setFormValue({ ...formValue, group: value })
+                }
+                value={formValue.group}
+                options={groupOptions}
+              />
+            </>
+          ) : null}
+          {viewMode !== "teacher" ? (
+            <>
+              <label>Преподаватель</label>
+              <ControlledSelect
+                name={"teacher"}
+                onChange={(value) =>
+                  setFormValue({ ...formValue, teacher: value })
+                }
+                value={formValue.teacher}
+                options={teacherOptions}
+              />
+            </>
+          ) : null}
+          {viewMode !== "auditorium" ? (
+            <>
+              <label>Аудитория</label>
+              <ControlledSelect
+                name={"auditorium"}
+                onChange={(value) =>
+                  setFormValue({ ...formValue, auditorium: value })
+                }
+                value={formValue.auditorium}
+                options={auditoriumOptions}
+              />
+            </>
+          ) : null}
+
+          <label>День недели</label>
+          <ControlledSelect
+            name={"day"}
+            onChange={(value) => setFormValue({ ...formValue, day: value })}
+            value={formValue.day}
+            options={dayOptions}
+          />
+
+          <label>Номер пары</label>
+          <ControlledSelect
+            name={"number"}
+            onChange={(value) => setFormValue({ ...formValue, number: value })}
+            value={formValue.number}
+            options={timeOptions}
+          />
+
+          <label>Вид занятия</label>
+          <ControlledSelect
+            name={"type"}
+            onChange={(value) => setFormValue({ ...formValue, type: value })}
+            value={formValue.type}
+            options={typeOptions}
+          />
+
+          <label>Дисциплина</label>
+          <ControlledSelect
+            name={"discipline"}
+            onChange={(value) =>
+              setFormValue({ ...formValue, discipline: value })
             }
-          }}
-        >
-          Создать слот
-        </Button>
-        <Button
-          // очищаем форму и выходим из модалки
-          onClick={(e) => {
-            onCancel(e);
-            clearForm();
-          }}
-        >
-          Закрыть
-        </Button>
-      </div>
+            value={formValue.discipline}
+            options={disciplineOptions}
+          />
+
+          <div className={styles.buttons}>
+            <Button
+              // если ошибки не было, после добавления элемента очищаем форму и выходим из модалки
+              onClick={(e) => {
+                addNewSlot(e);
+                if (!isError) {
+                  onCancel(e);
+                  clearForm();
+                }
+              }}
+            >
+              Создать слот
+            </Button>
+            <Button
+              // очищаем форму и выходим из модалки
+              onClick={(e) => {
+                onCancel(e);
+                clearForm();
+              }}
+            >
+              Закрыть
+            </Button>
+          </div>
+        </>
+      )}
     </form>
   );
 };

@@ -28,6 +28,8 @@ export const disciplineOptions = [
   },
 ];
 
+// export const disciplineOptions = [];
+
 export const auditoriumOptions = [
   { value: "4-513", name: "4-513" },
   { value: "4-515", name: "4-515" },

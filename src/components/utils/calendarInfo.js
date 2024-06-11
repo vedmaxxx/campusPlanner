@@ -45,76 +45,24 @@ export const generateWeeks = (semester, weeks_number = 21) => {
   return result;
 };
 
-export const insertWeeksInEmptySlots = (schedule) => {
-  console.log(schedule);
-  const emptyWeeks = generateWeeks(schedule.semester, schedule.weeksNumber);
-  if (schedule.weeks.length === 0) {
-    schedule.weeks = emptyWeeks;
-  } else {
-    // сортируем недели по номеру
-    // schedule.weeks.sort((a, b) => a.number - b.number);
+// array - куда вставляем, weeks - что вставляем
+export const insertWeeksInArray = (schedule_weeks, weeks) => {
+  if (weeks?.length === 0) return schedule_weeks;
+  if (weeks?.length > schedule_weeks.length) return schedule_weeks;
 
-    // находим первый и последний дни входящего расписания
-    let firstDayOfFirstWeek = schedule.weeks[0].dayslots[0];
-    let lastWeekIndex = schedule.weeks.length - 1;
-    let lastDayOfLastWeek =
-      schedule.weeks[lastWeekIndex].dayslots[
-        schedule.weeks[lastWeekIndex].dayslots.length - 1
-      ];
+  let result = schedule_weeks;
+  // находим первый и последний дни входящего расписания
+  for (let i = 0; i < weeks?.length; i++) {
+    let firstDayOfWeek = weeks[i]?.dayslots[0].date;
+    // console.log(firstDayOfWeek);
 
-    firstDayOfFirstWeek = new Date(firstDayOfFirstWeek.date);
-    lastDayOfLastWeek = new Date(lastDayOfLastWeek.date);
-
-    let emptyWeekIndex = emptyWeeks.length - 1;
-    let dayslotIndex = emptyWeeks[emptyWeekIndex].dayslots.length - 1;
-
-    console.log("Первый день пришедшего расписания:", firstDayOfFirstWeek);
-    console.log("Последний день пришедшего расписания:", lastDayOfLastWeek);
-
-    console.log(
-      "Первый день сформированного семестра:",
-      emptyWeeks[0].dayslots[0].date
-    );
-    console.log(
-      "Последний день сформированного расписания:",
-      emptyWeeks[emptyWeekIndex].dayslots[dayslotIndex].date
-    );
-
-    // если расписание начинается раньше - скип
-    if (
-      firstDayOfFirstWeek.getTime() < emptyWeeks[0].dayslots[0].date.getTime()
-    ) {
-      console.log("Даты расписания некорректны");
-      console.log("Начало семестра ", firstDayOfFirstWeek);
-      return;
-    }
-    // если расписание кончается позже - скип
-    if (
-      lastDayOfLastWeek.getTime() >
-      emptyWeeks[emptyWeekIndex].dayslots[dayslotIndex].date.getTime()
-    ) {
-      console.log("Даты расписания некорректны");
-      console.log("Начало семестра ", lastDayOfLastWeek);
-      return;
-    }
-
-    let weeks = [];
-
-    for (let i = 0; i < schedule.weeks.length; i++) {
-      let firstDayOfWeek = schedule.weeks[i].dayslots[0].date;
-      weeks = emptyWeeks.map((week) => {
-        if (week.dayslots[0].date.getTime() === firstDayOfWeek.getTime()) {
-          console.log("равен");
-          const newWeek = { ...week, dayslots: schedule.weeks[i].dayslots };
-
-          return newWeek;
-        } else return week;
-      });
-
-      // tempWeek.dayslots = schedule.weeks[i].dayslots;
-    }
-    return weeks;
+    result = result.map((w) => {
+      if (w.dayslots[0]?.date.getTime() === firstDayOfWeek.getTime()) {
+        return { ...w, dayslots: weeks[i].dayslots };
+      } else return w;
+    });
+    // console.log(result);
   }
 
-  return emptyWeeks;
+  return result;
 };

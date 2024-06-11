@@ -1,11 +1,9 @@
 import Axios from "axios";
 
-export default class AuditoriumService {
+export default class ChairService {
   static async getAll() {
     try {
-      const response = await Axios.get(
-        `http://localhost:5000/api/auditorium/all`
-      );
+      const response = await Axios.get(`http://localhost:5000/api/chair/all`);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -13,10 +11,7 @@ export default class AuditoriumService {
   }
   static async getById(id) {
     try {
-      const response = await Axios.get(
-        `http://localhost:5000/api/auditorium/${id}`
-      );
-
+      const response = await Axios.get(`http://localhost:5000/api/chair/${id}`);
       return response.data;
     } catch (error) {
       console.error(error);
