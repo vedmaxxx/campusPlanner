@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useFetching } from "./useFetching";
 
 // функция, вызывающая все асинх функции для подгрузки групп, семестра, факультета, кафедры
