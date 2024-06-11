@@ -3,10 +3,9 @@ import Select from "../UI/Select/Select";
 import FormHeader from "../UI/FormHeader/FormHeader";
 import styles from "./FormByGroup.module.css";
 import Button from "../UI/Button/Button";
-import { groupOptions } from "../utils/selectData";
-import AuditoriumService from "../../API/AuditoriumService";
 import { observer } from "mobx-react-lite";
 import groupStore from "../../stores/groupStore";
+import { useFormByGroupFetching } from "../../hooks/useFormByGroupFetching";
 
 const initFormValue = {
   group: "",
@@ -25,17 +24,44 @@ const FormByGroup = observer(({ onSubmit, onCancel }) => {
     setFormValue(initFormValue);
   }
 
+  // const [fetchGroupsFoo, isGroupsLoading, groupError] =
+  //   useFetching(fetchGroups);
+  const [fetchFormByGroup, isGroupsLoading, groupError] =
+    useFormByGroupFetching(fetchGroups);
+
   useEffect(() => {
-    fetchGroups();
+    fetchFormByGroup();
   }, []);
+
+  if (isGroupsLoading) {
+    return <div>Загрузка...</div>;
+  }
+  if (groupError) {
+    console.log(groupError);
+    return (
+      <>
+        <FormHeader>Ошибка</FormHeader>
+        <p>
+          Не удалось загрузить данные с сервера.
+          <br /> Перезагрузите страницу или обратитесь к администратору.
+        </p>
+        <div className={styles.buttons}>
+          <Button
+            onClick={(e) => {
+              onCancel(e);
+            }}
+          >
+            Закрыть
+          </Button>
+        </div>
+      </>
+    );
+  }
 
   return (
     <form className={styles.form}>
       <FormHeader>Расписание группы</FormHeader>
-      {/* {audData} */}
-      {/* {audData?.map((aud) => (
-        <div key={aud.id}>{aud.number}</div>
-      ))} */}
+
       <label>Семестр</label>
       <Select
         name={"semester"}
