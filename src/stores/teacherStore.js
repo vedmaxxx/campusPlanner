@@ -15,7 +15,20 @@ class TeacherStore {
     const teachers = await TeacherService.getAll();
     runInAction(() => {
       this._teachers = teachers;
+      console.log(this._teachers);
     });
+  };
+
+  getTeacherFullNameByID = (teacher_id) => {
+    const teacher = this._teachers.find((teacher) => teacher.id === teacher_id);
+    return (
+      teacher.surname +
+      " " +
+      teacher.name[0] +
+      "." +
+      teacher.patronymic[0] +
+      "."
+    );
   };
 }
 

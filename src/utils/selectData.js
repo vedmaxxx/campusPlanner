@@ -8,8 +8,8 @@ export const groupOptions = [
 ];
 
 export const teacherOptions = [
-  { value: "Иванов И.В.", name: "Иванов И. В." },
-  { value: "Васильев В.В.", name: "Васильев В.В." },
+  { value: "de31fee9-3c39-440a-821d-ff6a7f72fee5", name: "Иванов И.В." },
+  { value: "f760f174-c446-450d-a4c1-c4852c52b999", name: "Куценко Г.Д." },
   { value: "Грачев Г.Г.", name: "Грачев Г.Г." },
 ];
 
@@ -20,19 +20,15 @@ export const typeOptions = [
 ];
 
 export const disciplineOptions = [
-  { value: "Программирование", name: "Программирование" },
-  { value: "Философия", name: "Философия" },
-  {
-    value: "Средства вычислительной техники",
-    name: "Средства вычислительной техники",
-  },
+  { value: "d5bb972c-ddc2-419d-af7a-31557a77b644", name: "Программирование" },
+  { value: "2ddfbeae-4312-4762-9f33-d1db952530bd", name: "Философия" },
 ];
 
 // export const disciplineOptions = [];
 
 export const auditoriumOptions = [
-  { value: "4-513", name: "4-513" },
-  { value: "4-515", name: "4-515" },
+  { value: "13e482c2-0ce9-4db0-912e-9376df978561", name: "6-202" },
+  { value: "3cf13fca-3eb9-45ad-8051-e16683645aaa", name: "6-417а" },
 ];
 
 export const dayOptions = [

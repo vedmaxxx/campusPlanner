@@ -12,7 +12,7 @@ import {
   teacherOptions,
   timeOptions,
   typeOptions,
-} from "../utils/selectData";
+} from "../../utils/selectData";
 
 const initFormValue = {
   day: "",
@@ -25,8 +25,10 @@ const initFormValue = {
 };
 
 const CreateSlotForm = ({ onSubmit, onCancel }) => {
+  const scheduleParams = JSON.parse(localStorage.getItem("scheduleParams"));
   const { currentWeek } = useContext(WeekSlotContext);
-  const { viewMode, scheduleParams } = useContext(ScheduleContext);
+  const { mode } = scheduleParams;
+
   const [formValue, setFormValue] = useState(initFormValue);
 
   const [isOptionsEmpty, setIsOptionsEmpty] = useState(false);
@@ -35,7 +37,6 @@ const CreateSlotForm = ({ onSubmit, onCancel }) => {
   // функция добавления нового слота в расписание
   function addNewSlot(e) {
     e.preventDefault();
-    console.log(formValue);
     // если хотя бы одно поле в состоянии формы пустое, ставим флаг ошиьки setError(true)
     for (let select in formValue) {
       if (formValue[select] === "" || formValue[select] === undefined) {
@@ -47,14 +48,14 @@ const CreateSlotForm = ({ onSubmit, onCancel }) => {
 
     // формируем новый слот-пару
     const newSlot = {
-      id: Date.now(),
+      id: crypto.randomUUID(),
       number: Number(formValue.number),
       day: formValue.day,
       type: formValue.type,
       discipline: formValue.discipline,
-      auditorium: formValue.auditorium,
-      teacher: formValue.teacher,
-      group: formValue.group,
+      auditorium: formValue?.auditorium,
+      teacher: formValue?.teacher,
+      group: formValue?.group,
     };
     // находим нужный слот-день
     const newDaySlot = currentWeek.dayslots.find(
@@ -83,10 +84,10 @@ const CreateSlotForm = ({ onSubmit, onCancel }) => {
   useEffect(() => {
     if (scheduleParams !== null) {
       const temp = { ...formValue };
-      temp[viewMode] = scheduleParams[viewMode];
+      temp[mode] = scheduleParams.scheduleOptions[mode];
       setFormValue(temp);
     }
-  }, [scheduleParams, viewMode, currentWeek]);
+  }, [currentWeek]);
 
   // проверка на пустые options
   useEffect(() => {
@@ -124,7 +125,7 @@ const CreateSlotForm = ({ onSubmit, onCancel }) => {
           <h3 className={styles.title}>Создание слота</h3>
           <hr />
 
-          {viewMode !== "group" ? (
+          {mode !== "group" ? (
             <>
               <label>Группа</label>
               <ControlledSelect
@@ -137,7 +138,7 @@ const CreateSlotForm = ({ onSubmit, onCancel }) => {
               />
             </>
           ) : null}
-          {viewMode !== "teacher" ? (
+          {mode !== "teacher" ? (
             <>
               <label>Преподаватель</label>
               <ControlledSelect
@@ -150,7 +151,7 @@ const CreateSlotForm = ({ onSubmit, onCancel }) => {
               />
             </>
           ) : null}
-          {viewMode !== "auditorium" ? (
+          {mode !== "auditorium" ? (
             <>
               <label>Аудитория</label>
               <ControlledSelect

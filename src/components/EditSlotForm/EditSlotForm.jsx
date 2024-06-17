@@ -10,7 +10,7 @@ import {
   groupOptions,
   teacherOptions,
   typeOptions,
-} from "../utils/selectData";
+} from "../../utils/selectData";
 
 const initFormValue = {
   type: "",
@@ -21,10 +21,12 @@ const initFormValue = {
 };
 
 const EditSlotForm = ({ onSubmit, onCancel }) => {
-  const { viewMode, scheduleParams } = useContext(ScheduleContext);
   const { selectedSlotId, daySlotDate, currentWeek, getSlotById } =
     useContext(WeekSlotContext);
   const [formValue, setFormValue] = useState(initFormValue);
+
+  const scheduleParams = JSON.parse(localStorage.getItem("scheduleParams"));
+  const { mode } = scheduleParams;
 
   const slot = getSlotById(selectedSlotId, daySlotDate, currentWeek?.number);
 
@@ -56,6 +58,9 @@ const EditSlotForm = ({ onSubmit, onCancel }) => {
     isError = false;
   }
 
+  // заранее помещаем значение выбранной группы/преподавателя/аудитории
+  //  в объект создаваемого слота
+
   useEffect(() => {
     const value = {
       ...formValue,
@@ -66,10 +71,10 @@ const EditSlotForm = ({ onSubmit, onCancel }) => {
       group: slot?.group,
     };
     if (scheduleParams !== null) {
-      value[viewMode] = scheduleParams[viewMode];
+      value[mode] = scheduleParams.scheduleOptions[mode];
     }
     setFormValue(value);
-  }, [slot, scheduleParams]);
+  }, [slot]);
 
   return (
     <form className={styles.form}>
@@ -90,7 +95,7 @@ const EditSlotForm = ({ onSubmit, onCancel }) => {
         options={disciplineOptions}
       />
 
-      {viewMode !== "auditorium" ? (
+      {mode !== "auditorium" ? (
         <>
           <label>Аудитория</label>
           <ControlledSelect
@@ -104,7 +109,7 @@ const EditSlotForm = ({ onSubmit, onCancel }) => {
         </>
       ) : null}
 
-      {viewMode !== "teacher" ? (
+      {mode !== "teacher" ? (
         <>
           <label>Преподаватель</label>
           <ControlledSelect
@@ -115,7 +120,7 @@ const EditSlotForm = ({ onSubmit, onCancel }) => {
           />
         </>
       ) : null}
-      {viewMode !== "group" ? (
+      {mode !== "group" ? (
         <>
           <label>Группа</label>
           <ControlledSelect

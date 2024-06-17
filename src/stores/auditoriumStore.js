@@ -15,6 +15,7 @@ class AuditoriumStore {
     const auditoriums = await AuditoriumService.getAll();
     runInAction(() => {
       this._auditoriums = auditoriums;
+      console.log(this._auditoriums);
     });
   };
 }

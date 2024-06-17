@@ -5,12 +5,13 @@ import FormHeader from "../UI/FormHeader/FormHeader";
 import styles from "./FormByTeacher.module.css";
 import teacherStore from "../../stores/teacherStore";
 import { observer } from "mobx-react-lite";
+import { useFetching } from "../../hooks/useFetching";
 
 const initFormValue = {
   teacher: "",
   faculty: "",
   department: "",
-  curricilium: "",
+  curriculum: "",
   semester: "",
 };
 
@@ -22,9 +23,38 @@ const FormByTeacher = observer(({ onSubmit, onCancel }) => {
     setFormValue(initFormValue);
   }
 
+  const [fetchForm, isLoading, error] = useFetching(async () => {
+    await fetchTeachers();
+  });
+
   useEffect(() => {
-    fetchTeachers();
+    fetchForm();
   }, []);
+
+  if (isLoading) {
+    return <div>Загрузка...</div>;
+  }
+  if (error || teachers.length === 0) {
+    console.log(error);
+    return (
+      <>
+        <FormHeader>Ошибка</FormHeader>
+        <p>
+          Не удалось загрузить данные с сервера.
+          <br /> Перезагрузите страницу или обратитесь к администратору.
+        </p>
+        <div className={styles.buttons}>
+          <Button
+            onClick={(e) => {
+              onCancel(e);
+            }}
+          >
+            Закрыть
+          </Button>
+        </div>
+      </>
+    );
+  }
 
   return (
     <form className={styles.form}>
@@ -52,7 +82,7 @@ const FormByTeacher = observer(({ onSubmit, onCancel }) => {
       <label>Учебный план</label>
       <Select
         name={"curricilum"}
-        onChange={(value) => setFormValue({ ...formValue, curricilium: value })}
+        onChange={(value) => setFormValue({ ...formValue, curriculum: value })}
         defaultValue={"Номер учебного плана"}
         options={[
           { value: "38.03.05 БИ БА 3 2021", name: "38.03.05 БИ БА 3 2021" },

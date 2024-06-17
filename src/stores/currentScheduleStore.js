@@ -1,14 +1,7 @@
 import { makeAutoObservable } from "mobx";
-import { generateWeeks } from "../components/utils/calendarInfo";
 
 // Начальное состояние расписания
-const initSchedule = {
-  id: Date.now(),
-  curricilium: -1,
-  semester: -1,
-  group: "",
-  weeksNumber: -1,
-};
+const initSchedule = {};
 
 // Хранилище состояния текущего расписания
 class CurrentScheduleStore {
@@ -18,21 +11,7 @@ class CurrentScheduleStore {
   constructor() {
     makeAutoObservable(this);
 
-    this._schedule = {
-      id: Date.now(),
-      curricilium: 1,
-      semester: 2,
-      group: "",
-      weeksNumber: 21,
-    };
-    this.maxWeeks = this._schedule.weeksNumber;
-
-    // инициализируем недели расписания пустыми неделями
-    const emptyWeeks = generateWeeks(
-      this._schedule.semester,
-      this._schedule.weeksNumber
-    );
-    this._schedule.weeks = emptyWeeks;
+    this._schedule = initSchedule;
   }
 
   get schedule() {

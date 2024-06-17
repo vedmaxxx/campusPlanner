@@ -1,11 +1,9 @@
 import React, { useContext } from "react";
 import styles from "./WeekSlot.module.css";
 import DaySlot from "../DaySlot/DaySlot";
-import Button from "../UI/Button/Button";
 
 const WeekSlot = ({ week }) => {
   // если неделя пуста, отображаем сообщение
-
   if (
     week === undefined ||
     Object.keys(week).length === 0 ||

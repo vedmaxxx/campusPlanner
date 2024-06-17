@@ -8,14 +8,15 @@ import FormHeader from "../UI/FormHeader/FormHeader";
 import { useNavigate } from "react-router-dom";
 
 const MakeScheduleBy = () => {
-  const { viewMode, setViewMode, setScheduleParams } =
-    useContext(ScheduleContext);
+  // const { scheduleParams } = useContext(ScheduleContext);
+  // const { mode, setMode, scheduleOptions, setScheduleOptions } = scheduleParams;
+  const [mode, setMode] = useState("");
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
 
   function selectModeHandler(e) {
     e.preventDefault();
-    setViewMode(e.target.value);
+    setMode(e.target.value);
     setModal(true);
   }
   function onCancelHandler(e) {
@@ -30,9 +31,12 @@ const MakeScheduleBy = () => {
         return;
       }
     }
-    setScheduleParams({ current: { ...formValue }, mode: viewMode });
-    console.log(formValue);
-    navigate(`/schedule/${viewMode}`);
+    // сохранение в локальное хранилище
+    localStorage.setItem(
+      "scheduleParams",
+      JSON.stringify({ scheduleOptions: { ...formValue }, mode: mode })
+    );
+    navigate(`/schedule/${mode}`);
   }
 
   return (
@@ -53,9 +57,9 @@ const MakeScheduleBy = () => {
         </div>
 
         <Modal visible={modal} setVisible={setModal}>
-          {viewMode !== "" ? (
+          {mode !== "" ? (
             <FormScheduleBy
-              mode={viewMode}
+              mode={mode}
               onSubmit={onSubmitHandler}
               onCancel={onCancelHandler}
             />

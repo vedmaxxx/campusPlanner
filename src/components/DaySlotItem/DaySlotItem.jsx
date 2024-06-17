@@ -4,7 +4,7 @@ import SubjectSlot from "../SubjectSlot/SubjectSlot";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./DaySlotItem.module.css";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
-import { BREAK_TIME } from "../utils/consts";
+import { BREAK_TIME } from "../../utils/consts";
 import SlotTime from "../SlotTime/SlotTime";
 
 const BreakAfterSlot = ({ slotNumber }) => {

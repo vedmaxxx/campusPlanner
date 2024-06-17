@@ -5,13 +5,14 @@ import styles from "./FormByGroup.module.css";
 import Button from "../UI/Button/Button";
 import { observer } from "mobx-react-lite";
 import groupStore from "../../stores/groupStore";
-import { useFormByGroupFetching } from "../../hooks/useFormByGroupFetching";
+import auditoriumStore from "../../stores/auditoriumStore";
+import { useFetching } from "../../hooks/useFetching";
 
 const initFormValue = {
   group: "",
   faculty: "",
   department: "",
-  curricilium: "",
+  curriculum: "",
   semester: "",
 };
 
@@ -24,20 +25,19 @@ const FormByGroup = observer(({ onSubmit, onCancel }) => {
     setFormValue(initFormValue);
   }
 
-  // const [fetchGroupsFoo, isGroupsLoading, groupError] =
-  //   useFetching(fetchGroups);
-  const [fetchFormByGroup, isGroupsLoading, groupError] =
-    useFormByGroupFetching(fetchGroups);
+  const [fetchForm, isLoading, error] = useFetching(async () => {
+    await fetchGroups();
+  });
 
   useEffect(() => {
-    fetchFormByGroup();
+    fetchForm();
   }, []);
 
-  if (isGroupsLoading) {
+  if (isLoading) {
     return <div>Загрузка...</div>;
   }
-  if (groupError) {
-    console.log(groupError);
+  if (error || groups.length === 0) {
+    console.log(error);
     return (
       <>
         <FormHeader>Ошибка</FormHeader>
@@ -61,7 +61,6 @@ const FormByGroup = observer(({ onSubmit, onCancel }) => {
   return (
     <form className={styles.form}>
       <FormHeader>Расписание группы</FormHeader>
-
       <label>Семестр</label>
       <Select
         name={"semester"}
@@ -85,15 +84,9 @@ const FormByGroup = observer(({ onSubmit, onCancel }) => {
       <label>Учебный план</label>
       <Select
         name={"curricilium"}
-        onChange={(value) => setFormValue({ ...formValue, curricilium: value })}
+        onChange={(value) => setFormValue({ ...formValue, curriculum: value })}
         defaultValue={"Номер учебного плана"}
-        options={[
-          { value: 1, name: "38.03.05 БИ БА 3 2021" },
-          // {
-          //   value: "2",
-          //   name: "38.03.06 БП БА 3 2021",
-          // },
-        ]}
+        options={[{ value: 1, name: "38.03.05 БИ БА 3 2021" }]}
       />
       <label>Факультет</label>
       <Select

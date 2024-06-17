@@ -7,14 +7,25 @@ import ModalConfirm from "../components/UI/ModalConfirm/ModalConfirm";
 import WeekSlot from "../components/WeekSlot/WeekSlot";
 import CreateSlotForm from "../components/CreateSlotForm/CreateSlotForm";
 import EditSlotForm from "../components/EditSlotForm/EditSlotForm";
-import { ScheduleContext } from "../context/ScheduleContext";
 import { observer } from "mobx-react-lite";
 import currentScheduleStore from "../stores/currentScheduleStore";
+import { generateWeeks } from "../utils/calendarInfo";
+
+import GroupService from "../API/GroupService";
+import TeacherService from "../API/TeacherService";
+import AuditoriumService from "../API/AuditoriumService";
+import { useFetching } from "../hooks/useFetching";
+import ScheduleService from "../API/ScheduleService";
+import mapScheduleToAPIFormat from "../utils/mapper";
 
 // Страница с понедельным выводом расписания и возможностью управления слотами
 const ScheduleByStore = observer(() => {
-  const { scheduleParams, viewMode, findScheduleByGroup, findWeeksForTeacher } =
-    useContext(ScheduleContext);
+  // const { scheduleParams } = useContext(ScheduleContext);
+  // параметры выбранного расписания
+
+  const scheduleParams = JSON.parse(localStorage.getItem("scheduleParams"));
+  const { scheduleOptions, mode } = scheduleParams;
+
   const {
     currentWeekNumber,
     schedule,
@@ -26,16 +37,11 @@ const ScheduleByStore = observer(() => {
     createSlot,
     deleteSlot,
     editSlot,
-    getWeeks,
-    setWeeks,
     getSlotById,
     setCurrentWeekNumber,
   } = currentScheduleStore;
 
-  // отладка номера выбранной недели
-  // autorun(() => {
-  //   console.log(currentWeekNumber);
-  // });
+  const [title, setTitle] = useState("");
 
   // получение объектов текущей недели и максимального количества недель в расписании
   const currentWeek = getCurrentWeek();
@@ -50,7 +56,7 @@ const ScheduleByStore = observer(() => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
 
-  const [title, setTitle] = useState("");
+  const [scheduleIsFound, setScheduleIsFound] = useState(false);
 
   function createBtnHandler(slot_id, dayslot_date, week_number) {
     createSlot(slot_id, dayslot_date, week_number);
@@ -75,29 +81,116 @@ const ScheduleByStore = observer(() => {
     setDaySlotDate(new Date());
   }
 
-  // хук для загрузки уже существующего расписания по выбранным параметрам
-  //  из глобального хранилища расписаний в состояние текущего расписания
+  function createSchedule() {
+    // здесь в будущем вторым параметром нужно узнавать кол-во недель из Curriculum
+    const emptyWeeks = generateWeeks(scheduleOptions.semester, 21);
+
+    const newSchedule = {
+      id: crypto.randomUUID(),
+      curriculum: scheduleOptions.curriculum,
+      semester: scheduleOptions.semester,
+      weeksNumber: 21,
+      [mode]: scheduleOptions[mode],
+      weeks: emptyWeeks,
+    };
+    setScheduleIsFound(true);
+    setSchedule(newSchedule);
+  }
+
+  // в зависимости от режима будем грузить
+  // fetch(Группы/Аудитории/Преподаватели, виды занятий, дисциплины)
+  // ЗДЕСЬ ДОЛЖНА БЫТЬ ЗАГРУЗКА СУЩЕСТВУЮЩЕГО РАСПИСАНИЯ
+
+  const SERVICES = {
+    group: GroupService,
+    teacher: TeacherService,
+    auditorium: AuditoriumService,
+  };
+
+  // переписать на человеческий?
+  const fetchSaveSchedule = async (newSchedule) => {
+    let res;
+    await ScheduleService.post(newSchedule)
+      // если запрос корректен
+      .then((response) => {
+        res = response;
+        alert(res.message);
+      })
+      // если запрос некорректен
+      .catch((error) => {
+        console.log(error);
+        alert(
+          "Не удалось сохранить. Возможно, вы неверно заполнили расписание. Проверьте."
+        );
+      });
+    return res;
+  };
+
+  const fetchData = async () => {};
+
+  const saveSchedule = async () => {
+    // mapper на объект для API RDF-ки
+    const newSchedule = mapScheduleToAPIFormat(schedule, scheduleOptions);
+
+    console.log(newSchedule);
+    const res = await fetchSaveSchedule(newSchedule);
+    console.log(res);
+  };
+
+  const [fetchTitle, isTitleLoading, titleError] = useFetching(async () => {
+    const res = await SERVICES[mode].getById(scheduleOptions[mode]);
+    if (mode === "teacher") {
+      setTitle(res.surname + " " + res.name + " " + res.patronymic);
+      return;
+    }
+    setTitle(res.number);
+  });
+
   useEffect(() => {
-    console.log(scheduleParams.mode);
-  }, [scheduleParams]);
+    setSchedule({});
+    // загрузка тайтла
+    fetchTitle();
+    console.log(schedule);
+  }, []);
 
   return (
     <div className="container">
-      <div className="page_title">
-        {scheduleParams.mode === "group" ? (
-          <div>Учебная группа {scheduleParams?.current.group}</div>
-        ) : null}
-        {scheduleParams.mode === "teacher" ? (
-          <div>Преподаватель {scheduleParams?.teacher}</div>
-        ) : null}
-        {scheduleParams.mode === "auditorium" ? (
-          <div>Аудитория{scheduleParams?.auditorium}</div>
-        ) : null}
-      </div>
+      {mode ? (
+        <>
+          <div>{scheduleOptions.semester} cеместр</div>
+          <div>Учебный план - {scheduleOptions.curriculum}</div>
+          <div>Факультет {scheduleOptions.faculty}</div>
+          <div>Кафедра {scheduleOptions.department}</div>
+        </>
+      ) : null}
+      {mode === "group" ? (
+        <div className="page_title">Учебная группа {title}</div>
+      ) : null}
+      {mode === "teacher" ? (
+        <div className="page_title">Преподаватель {title}</div>
+      ) : null}
+      {mode === "auditorium" ? (
+        <div className="page_title">Аудитория {title}</div>
+      ) : null}
 
-      <div className="toolbar">
-        <Button onClick={() => setCreateModal(true)}>Создать слот</Button>
-      </div>
+      {mode ? (
+        <div className="toolbar">
+          <Button
+            disabled={!scheduleIsFound ? true : false}
+            onClick={() => setCreateModal(true)}
+          >
+            Создать слот
+          </Button>
+          <Button
+            disabled={
+              Object.keys(schedule).length === 0 || schedule.weeks === undefined
+            }
+            onClick={() => saveSchedule()}
+          >
+            Сохранить расписание
+          </Button>
+        </div>
+      ) : null}
 
       <WeekSlotContext.Provider
         value={{
@@ -115,8 +208,18 @@ const ScheduleByStore = observer(() => {
           setCurrentWeekNumber,
         }}
       >
-        <WeekBar />
-        <WeekSlot week={currentWeek} />
+        {scheduleIsFound ? (
+          <>
+            <WeekBar />
+            <WeekSlot week={currentWeek} />
+          </>
+        ) : (
+          <div className="schedule_not_found">
+            <h2>Расписание не найдено</h2>
+            <p>Желаете создать новое расписание для этих параметров?</p>
+            <Button onClick={createSchedule}>Создать</Button>
+          </div>
+        )}
 
         <Modal visible={deleteModal} setVisible={setDeleteModal}>
           <ModalConfirm

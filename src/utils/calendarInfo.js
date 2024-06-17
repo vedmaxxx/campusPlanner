@@ -7,6 +7,7 @@ export const firstDayOfSemester = {
   2: new Date(2024, 1, 1),
 };
 
+// создание пустых недель
 export const generateWeeks = (semester, weeks_number = 21) => {
   // генерация пустых недель с днями для конкретного семестра и на определенное кол-во недель
   const first_day = firstDayOfSemester[semester];

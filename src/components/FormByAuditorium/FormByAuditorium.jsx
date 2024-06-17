@@ -6,6 +6,7 @@ import Button from "../UI/Button/Button";
 import auditoriumStore from "../../stores/auditoriumStore";
 import { observer } from "mobx-react-lite";
 import axios from "axios";
+import { useFetching } from "../../hooks/useFetching";
 
 const initFormValue = {
   auditorium: { value: "", name: "" },
@@ -22,9 +23,38 @@ const FormByAuditorium = observer(({ onSubmit, onCancel }) => {
     setFormValue(initFormValue);
   }
 
+  const [fetchForm, isLoading, error] = useFetching(async () => {
+    await fetchAuditoriums();
+  });
+
   useEffect(() => {
-    fetchAuditoriums();
+    fetchForm();
   }, []);
+
+  if (isLoading) {
+    return <div>Загрузка...</div>;
+  }
+  if (error || auditoriums.length === 0) {
+    console.log(error);
+    return (
+      <>
+        <FormHeader>Ошибка</FormHeader>
+        <p>
+          Не удалось загрузить данные с сервера.
+          <br /> Перезагрузите страницу или обратитесь к администратору.
+        </p>
+        <div className={styles.buttons}>
+          <Button
+            onClick={(e) => {
+              onCancel(e);
+            }}
+          >
+            Закрыть
+          </Button>
+        </div>
+      </>
+    );
+  }
 
   return (
     <form className={styles.form}>
