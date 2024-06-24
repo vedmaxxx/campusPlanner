@@ -8,7 +8,6 @@ import WeekSlot from "../components/WeekSlot/WeekSlot";
 import CreateSlotForm from "../components/CreateSlotForm/CreateSlotForm";
 import EditSlotForm from "../components/EditSlotForm/EditSlotForm";
 import { observer } from "mobx-react-lite";
-import currentScheduleStore from "../stores/currentScheduleStore";
 import { generateWeeks } from "../utils/calendarInfo";
 
 import GroupService from "../API/GroupService";
@@ -17,29 +16,36 @@ import AuditoriumService from "../API/AuditoriumService";
 import { useFetching } from "../hooks/useFetching";
 import ScheduleService from "../API/ScheduleService";
 import mapScheduleToAPIFormat from "../utils/mapper";
+import { useStores } from "../context/RootStoreContext";
 
 // Страница с понедельным выводом расписания и возможностью управления слотами
 const ScheduleByStore = observer(() => {
-  // const { scheduleParams } = useContext(ScheduleContext);
   // параметры выбранного расписания
 
   const scheduleParams = JSON.parse(localStorage.getItem("scheduleParams"));
   const { scheduleOptions, mode } = scheduleParams;
 
   const {
-    currentWeekNumber,
-    schedule,
-    setSchedule,
-    getCurrentWeek,
-    getMaxWeeks,
-    decrementWeekNumber,
-    incrementWeekNumber,
-    createSlot,
-    deleteSlot,
-    editSlot,
-    getSlotById,
-    setCurrentWeekNumber,
-  } = currentScheduleStore;
+    scheduleStore: {
+      currentWeekNumber,
+      schedule,
+      setSchedule,
+      getCurrentWeek,
+      getMaxWeeks,
+      decrementWeekNumber,
+      incrementWeekNumber,
+      createSlot,
+      deleteSlot,
+      editSlot,
+      getSlotById,
+      setCurrentWeekNumber,
+      scheduleWeeksIsEmpty,
+    },
+    teacherStore: { fetchTeachers, getTeacherFullNameByID, teacherOptions },
+    auditoriumStore: { fetchAuditoriums, getAuditoriumByID, auditoriumOptions },
+    groupStore: { fetchGroups, getGroupNumberByID, groupOptions },
+    disciplineStore: { fetchDisciplines, getDisciplineByID, disciplineOptions },
+  } = useStores();
 
   const [title, setTitle] = useState("");
 
@@ -93,18 +99,42 @@ const ScheduleByStore = observer(() => {
       [mode]: scheduleOptions[mode],
       weeks: emptyWeeks,
     };
-    setScheduleIsFound(true);
+
     setSchedule(newSchedule);
   }
-
-  // в зависимости от режима будем грузить
-  // fetch(Группы/Аудитории/Преподаватели, виды занятий, дисциплины)
-  // ЗДЕСЬ ДОЛЖНА БЫТЬ ЗАГРУЗКА СУЩЕСТВУЮЩЕГО РАСПИСАНИЯ
 
   const SERVICES = {
     group: GroupService,
     teacher: TeacherService,
     auditorium: AuditoriumService,
+  };
+
+  const collisionsAlert = (response) => {
+    switch (response.reason) {
+      case "teacher":
+        alert(
+          `Найдено пересечение в занятиях у преподавателя ${getTeacherFullNameByID(
+            response.teacherId
+          )} на дату ${response.date}, ${response.classNumber} пара`
+        );
+        break;
+      case "group":
+        alert(
+          `Найдено пересечение в занятиях у группы ${
+            getGroupNumberByID(response.groupId).number
+          } на дату ${response.date}, ${response.classNumber} пара`
+        );
+        break;
+      case "auditorium":
+        alert(
+          `Найдено пересечение в занятиях у аудитории ${getAuditoriumByID(
+            response.auditoriumId
+          )} на дату ${response.date}, ${response.classNumber} пара`
+        );
+        break;
+      default:
+        break;
+    }
   };
 
   // переписать на человеческий?
@@ -116,23 +146,43 @@ const ScheduleByStore = observer(() => {
         res = response;
         alert(res.message);
       })
-      // если запрос некорректен
+      // если запрос
       .catch((error) => {
-        console.log(error);
-        alert(
-          "Не удалось сохранить. Возможно, вы неверно заполнили расписание. Проверьте."
-        );
+        const response = error.response.data;
+        console.log(response);
+        if (response.reason !== undefined) {
+          collisionsAlert(response);
+        } else {
+          alert(
+            "Не удалось сохранить. Возможно, вы неверно заполнили расписание. Проверьте."
+          );
+        }
       });
     return res;
   };
 
-  const fetchData = async () => {};
+  const scheduleIsEmpty = (schedule) => {
+    for (const week of schedule.weeks) {
+      for (const dayslot of week.dayslots) {
+        // нашли хотя бы один непустой слот
+        if (dayslot.slots.length !== 0) {
+          return false;
+        }
+      }
+    }
+    return true;
+  };
 
   const saveSchedule = async () => {
-    // mapper на объект для API RDF-ки
-    const newSchedule = mapScheduleToAPIFormat(schedule, scheduleOptions);
+    const isEmpty = scheduleIsEmpty(schedule);
+    if (isEmpty) {
+      alert("Нельзя сохранять расписание без слотов!");
+      return;
+    }
 
-    console.log(newSchedule);
+    const newSchedule = mapScheduleToAPIFormat(schedule, scheduleOptions);
+    console.log("Новое расписание: ", newSchedule);
+
     const res = await fetchSaveSchedule(newSchedule);
     console.log(res);
   };
@@ -146,11 +196,15 @@ const ScheduleByStore = observer(() => {
     setTitle(res.number);
   });
 
+  // загрузка данных с сервера
   useEffect(() => {
-    setSchedule({});
-    // загрузка тайтла
+    fetchTeachers();
+    fetchAuditoriums();
+    fetchGroups();
+    fetchDisciplines();
     fetchTitle();
-    console.log(schedule);
+    setSchedule({});
+    console.log("Текущее расписание: ", schedule);
   }, []);
 
   return (
@@ -176,15 +230,13 @@ const ScheduleByStore = observer(() => {
       {mode ? (
         <div className="toolbar">
           <Button
-            disabled={!scheduleIsFound ? true : false}
+            disabled={scheduleWeeksIsEmpty}
             onClick={() => setCreateModal(true)}
           >
             Создать слот
           </Button>
           <Button
-            disabled={
-              Object.keys(schedule).length === 0 || schedule.weeks === undefined
-            }
+            disabled={scheduleWeeksIsEmpty}
             onClick={() => saveSchedule()}
           >
             Сохранить расписание
@@ -206,9 +258,17 @@ const ScheduleByStore = observer(() => {
           selectSlots,
           getSlotById,
           setCurrentWeekNumber,
+          getTeacherFullNameByID,
+          getGroupNumberByID,
+          getAuditoriumByID,
+          getDisciplineByID,
+          disciplineOptions,
+          groupOptions,
+          auditoriumOptions,
+          teacherOptions,
         }}
       >
-        {scheduleIsFound ? (
+        {!scheduleWeeksIsEmpty ? (
           <>
             <WeekBar />
             <WeekSlot week={currentWeek} />

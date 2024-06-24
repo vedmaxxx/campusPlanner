@@ -4,6 +4,8 @@ import AppRouter from "./components/AppRouter/AppRouter";
 import NavBar from "./components/NavBar/NavBar";
 import { useEffect } from "react";
 import { ScheduleContext } from "./context/ScheduleContext";
+import { RootStoreContext } from "./context/RootStoreContext";
+import RootStore from "./stores/rootStore";
 
 function App() {
   // состояние параметров расписания
@@ -19,16 +21,12 @@ function App() {
   return (
     <div className="App">
       {/* предоставление доступа к состояниям режима и расписания с помощью контекста */}
-      <ScheduleContext.Provider
-        value={{
-          scheduleParams,
-        }}
-      >
+      <RootStoreContext.Provider value={new RootStore()}>
         <BrowserRouter>
           <NavBar />
           <AppRouter />
         </BrowserRouter>
-      </ScheduleContext.Provider>
+      </RootStoreContext.Provider>
     </div>
   );
 }

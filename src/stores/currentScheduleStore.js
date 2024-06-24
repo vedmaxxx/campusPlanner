@@ -18,6 +18,11 @@ class CurrentScheduleStore {
     return this._schedule;
   }
 
+  get scheduleWeeksIsEmpty() {
+    console.log(Object.keys(this._schedule).length === 0 ? true : false);
+    return Object.keys(this._schedule).length === 0 ? true : false;
+  }
+
   setSchedule = (schedule) => {
     this._schedule = schedule;
   };

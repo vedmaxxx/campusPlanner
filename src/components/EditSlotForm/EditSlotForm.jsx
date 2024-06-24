@@ -3,14 +3,7 @@ import { WeekSlotContext } from "../../context/WeekSlotContext";
 import styles from "./EditSlotForm.module.css";
 import Button from "../UI/Button/Button";
 import ControlledSelect from "../UI/ControlledSelect/ControlledSelect";
-import { ScheduleContext } from "../../context/ScheduleContext";
-import {
-  auditoriumOptions,
-  disciplineOptions,
-  groupOptions,
-  teacherOptions,
-  typeOptions,
-} from "../../utils/selectData";
+import { typeOptions } from "../../utils/selectData";
 
 const initFormValue = {
   type: "",
@@ -21,8 +14,16 @@ const initFormValue = {
 };
 
 const EditSlotForm = ({ onSubmit, onCancel }) => {
-  const { selectedSlotId, daySlotDate, currentWeek, getSlotById } =
-    useContext(WeekSlotContext);
+  const {
+    selectedSlotId,
+    daySlotDate,
+    currentWeek,
+    getSlotById,
+    disciplineOptions,
+    groupOptions,
+    auditoriumOptions,
+    teacherOptions,
+  } = useContext(WeekSlotContext);
   const [formValue, setFormValue] = useState(initFormValue);
 
   const scheduleParams = JSON.parse(localStorage.getItem("scheduleParams"));
@@ -53,6 +54,7 @@ const EditSlotForm = ({ onSubmit, onCancel }) => {
     );
     // записываем в новый слот все значения с формы
     const newSlot = { ...slot, ...formValue };
+    console.log(newSlot);
 
     onSubmit(newSlot);
     isError = false;

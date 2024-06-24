@@ -5,7 +5,6 @@ import styles from "./FormByGroup.module.css";
 import Button from "../UI/Button/Button";
 import { observer } from "mobx-react-lite";
 import groupStore from "../../stores/groupStore";
-import auditoriumStore from "../../stores/auditoriumStore";
 import { useFetching } from "../../hooks/useFetching";
 
 const initFormValue = {

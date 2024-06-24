@@ -5,33 +5,31 @@ import { faPenToSquare, faTrashAlt } from "@fortawesome/free-regular-svg-icons";
 import IconBtn from "../UI/IconBtn/IconBtn";
 import styles from "./SubjectSlot.module.css";
 import cx from "classnames";
-import TeacherService from "../../API/TeacherService";
 
 const SubjectSlot = ({ subjectSlot, date }) => {
   const scheduleParams = JSON.parse(localStorage.getItem("scheduleParams"));
   const { mode } = scheduleParams;
+  const {
+    setDeleteModal,
+    setEditModal,
+    selectSlots,
+    getTeacherFullNameByID,
+    getGroupNumberByID,
+    getAuditoriumByID,
+    getDisciplineByID,
+  } = useContext(WeekSlotContext);
 
-  const [teacherName, setTeacherName] = useState("");
-  const [groupName, setGroupName] = useState("");
-
-  const { setDeleteModal, setEditModal, selectSlots } =
-    useContext(WeekSlotContext);
-
-  const fetchData = async () => {
-    const teacherData = await TeacherService.getById(subjectSlot.teacher);
-    setTeacherName(
-      teacherData.surname +
-        " " +
-        teacherData.name[0] +
-        "." +
-        teacherData.patronymic[0] +
-        "."
-    );
-  };
+  const [teacher, setTeacherName] = useState("");
+  const [group, setGroupName] = useState("");
+  const [auditorium, setAuditoriumName] = useState("");
+  const [discipline, setDisciplineName] = useState("");
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    setTeacherName(getTeacherFullNameByID(subjectSlot.teacher));
+    setGroupName(getGroupNumberByID(subjectSlot.group).number);
+    setAuditoriumName(getAuditoriumByID(subjectSlot.auditorium).number);
+    setDisciplineName(getDisciplineByID(subjectSlot.discipline).title);
+  }, [subjectSlot]);
 
   return (
     <div className={styles.container}>
@@ -39,11 +37,11 @@ const SubjectSlot = ({ subjectSlot, date }) => {
         <h3 className={cx(styles.type, styles[subjectSlot.type])}>
           {subjectSlot.number}. {SUBJECT_TYPES[subjectSlot.type]}
         </h3>
-        <div>{subjectSlot.discipline}</div>
+        <div>{discipline}</div>
 
-        {mode !== "auditorium" ? <div>{subjectSlot.auditorium}</div> : null}
-        {mode !== "teacher" ? <div>{teacherName}</div> : null}
-        {mode !== "group" ? <div>{subjectSlot.group}</div> : null}
+        {mode !== "auditorium" ? <div>{auditorium}</div> : null}
+        {mode !== "teacher" ? <div>{teacher}</div> : null}
+        {mode !== "group" ? <div>{group}</div> : null}
 
         <div className={styles.footer}>
           <IconBtn

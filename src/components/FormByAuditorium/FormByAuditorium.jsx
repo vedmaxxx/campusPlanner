@@ -17,8 +17,6 @@ const FormByAuditorium = observer(({ onSubmit, onCancel }) => {
   const [formValue, setFormValue] = useState(initFormValue);
   const { auditoriums, fetchAuditoriums } = auditoriumStore;
 
-  const [auds, setAuds] = useState([]);
-
   function clearForm() {
     setFormValue(initFormValue);
   }
@@ -60,10 +58,6 @@ const FormByAuditorium = observer(({ onSubmit, onCancel }) => {
     <form className={styles.form}>
       <FormHeader>Расписание аудитории</FormHeader>
       <label>Семестр</label>
-      {auds?.map((aud) => (
-        <div>{aud?.number}</div>
-      ))}
-
       <Select
         name={"semester"}
         onChange={(value) => setFormValue({ ...formValue, semester: value })}

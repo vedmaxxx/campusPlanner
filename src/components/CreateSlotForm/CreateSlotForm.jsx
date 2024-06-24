@@ -3,16 +3,7 @@ import { WeekSlotContext } from "../../context/WeekSlotContext";
 import styles from "./CreateSlotForm.module.css";
 import Button from "../UI/Button/Button";
 import ControlledSelect from "../UI/ControlledSelect/ControlledSelect";
-import { ScheduleContext } from "../../context/ScheduleContext";
-import {
-  auditoriumOptions,
-  dayOptions,
-  disciplineOptions,
-  groupOptions,
-  teacherOptions,
-  timeOptions,
-  typeOptions,
-} from "../../utils/selectData";
+import { dayOptions, timeOptions, typeOptions } from "../../utils/selectData";
 
 const initFormValue = {
   day: "",
@@ -26,7 +17,13 @@ const initFormValue = {
 
 const CreateSlotForm = ({ onSubmit, onCancel }) => {
   const scheduleParams = JSON.parse(localStorage.getItem("scheduleParams"));
-  const { currentWeek } = useContext(WeekSlotContext);
+  const {
+    currentWeek,
+    disciplineOptions,
+    groupOptions,
+    auditoriumOptions,
+    teacherOptions,
+  } = useContext(WeekSlotContext);
   const { mode } = scheduleParams;
 
   const [formValue, setFormValue] = useState(initFormValue);
@@ -69,7 +66,8 @@ const CreateSlotForm = ({ onSubmit, onCancel }) => {
         return;
       }
     }
-    // создаем объект в расписании
+    console.log(newSlot);
+
     onSubmit(newSlot, newDaySlot.date, currentWeek.number);
     isError = false;
   }
@@ -102,7 +100,13 @@ const CreateSlotForm = ({ onSubmit, onCancel }) => {
     )
       setIsOptionsEmpty(true);
     else setIsOptionsEmpty(false);
-  }, []);
+  }, [
+    auditoriumOptions,
+    dayOptions,
+    disciplineOptions,
+    groupOptions,
+    teacherOptions,
+  ]);
 
   return (
     <form className={styles.form}>

@@ -11,11 +11,17 @@ class TeacherStore {
     return this._teachers;
   }
 
+  get teacherOptions() {
+    return this._teachers.map((item) => ({
+      value: item.id,
+      name: this.getTeacherFullNameByID(item.id),
+    }));
+  }
+
   fetchTeachers = async () => {
     const teachers = await TeacherService.getAll();
     runInAction(() => {
       this._teachers = teachers;
-      console.log(this._teachers);
     });
   };
 

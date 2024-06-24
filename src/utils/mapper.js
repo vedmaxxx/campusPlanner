@@ -6,7 +6,6 @@ export default function mapScheduleToAPIFormat(schedule, scheduleOptions) {
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
-
     return `${year}-${month}-${day}`;
   };
 
@@ -20,7 +19,7 @@ export default function mapScheduleToAPIFormat(schedule, scheduleOptions) {
       weekNumber: week.number,
       classOfWeeks: week.dayslots.map((dayslot) => ({
         id: dayslot.id,
-        dayOfWeek: dayslot.date.getDay(),
+        dayOfWee: new Date(dayslot.date).getDay(),
         date: getDateString(dayslot.date),
         scheduledClasses: dayslot.slots.map((slot) => ({
           id: slot.id,
@@ -33,6 +32,6 @@ export default function mapScheduleToAPIFormat(schedule, scheduleOptions) {
       })),
     })),
   };
-  // console.log(JSON.stringify(newSchedule));
+
   return newSchedule;
 }
