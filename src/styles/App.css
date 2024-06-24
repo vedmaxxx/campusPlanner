@@ -1,3 +1,6 @@
+html {
+  scrollbar-gutter: stable both-side;
+}
 * {
   margin: 0;
   padding: 0;
@@ -48,4 +51,21 @@ hr {
   position: absolute;
   top: 0;
   right: 0;
+}
+
+.toolbar {
+  display: flex;
+  gap: 20px;
+}
+
+.schedule_not_found {
+  margin: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 400px;
+}
+.schedule_not_found h2 {
+  font-size: 24px;
 }

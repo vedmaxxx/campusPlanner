@@ -1,10 +1,9 @@
-import React, { useContext, useState } from "react";
-import { SLOT_TIME_NUMBER } from "../utils/consts";
+import React, { useContext, useEffect, useState } from "react";
 import { WeekSlotContext } from "../../context/WeekSlotContext";
 import styles from "./CreateSlotForm.module.css";
 import Button from "../UI/Button/Button";
 import ControlledSelect from "../UI/ControlledSelect/ControlledSelect";
-import { ScheduleContext } from "../../context/ScheduleContext";
+import { dayOptions, timeOptions, typeOptions } from "../../utils/selectData";
 
 const initFormValue = {
   day: "",
@@ -13,26 +12,31 @@ const initFormValue = {
   discipline: "",
   auditorium: "",
   teacher: "",
+  group: "",
 };
 
-const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
-  const { week } = useContext(WeekSlotContext);
-  const { viewMode } = useContext(ScheduleContext);
+const CreateSlotForm = ({ onSubmit, onCancel }) => {
+  const scheduleParams = JSON.parse(localStorage.getItem("scheduleParams"));
+  const {
+    currentWeek,
+    disciplineOptions,
+    groupOptions,
+    auditoriumOptions,
+    teacherOptions,
+  } = useContext(WeekSlotContext);
+  const { mode } = scheduleParams;
+
   const [formValue, setFormValue] = useState(initFormValue);
 
-  const timeOptions = [1, 2, 3, 4, 5, 6, 7, 8];
+  const [isOptionsEmpty, setIsOptionsEmpty] = useState(false);
   let isError = false;
 
-  // заглушка
-  function handleSubmit(e) {
-    e.preventDefault();
-  }
-
+  // функция добавления нового слота в расписание
   function addNewSlot(e) {
     e.preventDefault();
     // если хотя бы одно поле в состоянии формы пустое, ставим флаг ошиьки setError(true)
     for (let select in formValue) {
-      if (formValue[select] == "" || formValue[select] == undefined) {
+      if (formValue[select] === "" || formValue[select] === undefined) {
         alert("Заполните все поля формы!");
         isError = true;
         return;
@@ -41,30 +45,30 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
 
     // формируем новый слот-пару
     const newSlot = {
-      id: Date.now(),
+      id: crypto.randomUUID(),
       number: Number(formValue.number),
       day: formValue.day,
       type: formValue.type,
       discipline: formValue.discipline,
-      auditorium: formValue.auditorium,
-      teacher: formValue.teacher,
+      auditorium: formValue?.auditorium,
+      teacher: formValue?.teacher,
+      group: formValue?.group,
     };
-
     // находим нужный слот-день
-    const newDaySlot = week.dayslots.find(
+    const newDaySlot = currentWeek.dayslots.find(
       (daySlot) => daySlot.day === formValue.day
     );
     // ищем в данном дне новую пару - если пара под этим номером существует, кидаем уведомление
     for (let sl of newDaySlot?.slots) {
-      if (newSlot?.number == sl.number) {
+      if (newSlot?.number === sl.number) {
         alert("Данный слот занят");
         isError = true;
         return;
       }
     }
+    console.log(newSlot);
 
-    // вызываем функцию добавления слота-пары в состояние расписания
-    handleCreateSlot(newDaySlot, newSlot);
+    onSubmit(newSlot, newDaySlot.date, currentWeek.number);
     isError = false;
   }
 
@@ -73,106 +77,157 @@ const CreateSlotForm = ({ handleCreateSlot, onCancel }) => {
     setFormValue(initFormValue);
   }
 
+  // заранее помещаем значение выбранной группы/преподавателя/аудитории
+  //  в объект создаваемого слота
+  useEffect(() => {
+    if (scheduleParams !== null) {
+      const temp = { ...formValue };
+      temp[mode] = scheduleParams.scheduleOptions[mode];
+      setFormValue(temp);
+    }
+  }, [currentWeek]);
+
+  // проверка на пустые options
+  useEffect(() => {
+    if (
+      auditoriumOptions.length === 0 ||
+      dayOptions.length === 0 ||
+      disciplineOptions.length === 0 ||
+      groupOptions.length === 0 ||
+      teacherOptions.length === 0 ||
+      timeOptions.length === 0 ||
+      typeOptions.length === 0
+    )
+      setIsOptionsEmpty(true);
+    else setIsOptionsEmpty(false);
+  }, [
+    auditoriumOptions,
+    dayOptions,
+    disciplineOptions,
+    groupOptions,
+    teacherOptions,
+  ]);
+
   return (
-    <form className={styles.form} method="post" onSubmit={handleSubmit}>
-      <h3 className={styles.title}>Создание слота</h3>
-      <hr />
-      <label>День недели</label>
-      <ControlledSelect
-        name={"day"}
-        onChange={(value) => setFormValue({ ...formValue, day: value })}
-        value={formValue.day}
-        options={[
-          { value: "monday", name: "Пн" },
-          { value: "tuesday", name: "Вт" },
-          { value: "wednesday", name: "Ср" },
-          { value: "thursday", name: "Чт" },
-          { value: "friday", name: "Пт" },
-          { value: "saturday", name: "Сб" },
-        ]}
-      />
-
-      <label>Номер пары</label>
-      <ControlledSelect
-        name={"number"}
-        onChange={(value) => setFormValue({ ...formValue, number: value })}
-        value={formValue.number}
-        options={timeOptions.map((option) => ({
-          value: option,
-          name: `${option} пара ${SLOT_TIME_NUMBER[option]}`,
-        }))}
-      />
-
-      <label>Вид занятия</label>
-      <ControlledSelect
-        name={"type"}
-        onChange={(value) => setFormValue({ ...formValue, type: value })}
-        value={formValue.type}
-        options={[
-          { value: "lecture", name: "Лекция" },
-          { value: "practice", name: "Практика" },
-          { value: "laboratory", name: "Лабораторная" },
-        ]}
-      />
-
-      <label>Дисциплина</label>
-      <ControlledSelect
-        name={"discipline"}
-        onChange={(value) => setFormValue({ ...formValue, discipline: value })}
-        value={formValue.discipline}
-        options={[
-          { value: "Программирование", name: "Программирование" },
-          { value: "Философия", name: "Философия" },
-          {
-            value: "Средства вычислительной техники",
-            name: "Средства вычислительной техники",
-          },
-        ]}
-      />
-
-      <label>Аудитория</label>
-      <ControlledSelect
-        name={"auditorium"}
-        onChange={(value) => setFormValue({ ...formValue, auditorium: value })}
-        value={formValue.auditorium}
-        options={[{ value: "6-404", name: "6-404" }]}
-      />
-
-      <label>Преподаватель</label>
-      <ControlledSelect
-        name={"teacher"}
-        onChange={(value) => setFormValue({ ...formValue, teacher: value })}
-        value={formValue.teacher}
-        options={[
-          { value: "Иванов И.В.", name: "Иванов И. В." },
-          { value: "Васильев В.В.", name: "Васильев В.В." },
-          { value: "Грачев Г.Г.", name: "Грачев Г.Г." },
-        ]}
-      />
-
-      <div className={styles.buttons}>
-        <Button
-          // если ошибки не было, после добавления элемента очищаем форму и выходим из модалки
-          onClick={(e) => {
-            addNewSlot(e);
-            if (!isError) {
+    <form className={styles.form}>
+      {isOptionsEmpty ? (
+        <div className={styles.is_options_empty}>
+          <div>
+            Варианты выбора в форме были загружены неверно. Обратитесь к
+            администратору.
+          </div>
+          <Button
+            onClick={(e) => {
               onCancel(e);
-              clearForm();
+            }}
+          >
+            Закрыть
+          </Button>
+        </div>
+      ) : (
+        <>
+          <h3 className={styles.title}>Создание слота</h3>
+          <hr />
+
+          {mode !== "group" ? (
+            <>
+              <label>Группа</label>
+              <ControlledSelect
+                name={"group"}
+                onChange={(value) =>
+                  setFormValue({ ...formValue, group: value })
+                }
+                value={formValue.group}
+                options={groupOptions}
+              />
+            </>
+          ) : null}
+          {mode !== "teacher" ? (
+            <>
+              <label>Преподаватель</label>
+              <ControlledSelect
+                name={"teacher"}
+                onChange={(value) =>
+                  setFormValue({ ...formValue, teacher: value })
+                }
+                value={formValue.teacher}
+                options={teacherOptions}
+              />
+            </>
+          ) : null}
+          {mode !== "auditorium" ? (
+            <>
+              <label>Аудитория</label>
+              <ControlledSelect
+                name={"auditorium"}
+                onChange={(value) =>
+                  setFormValue({ ...formValue, auditorium: value })
+                }
+                value={formValue.auditorium}
+                options={auditoriumOptions}
+              />
+            </>
+          ) : null}
+
+          <label>День недели</label>
+          <ControlledSelect
+            name={"day"}
+            onChange={(value) => setFormValue({ ...formValue, day: value })}
+            value={formValue.day}
+            options={dayOptions}
+          />
+
+          <label>Номер пары</label>
+          <ControlledSelect
+            name={"number"}
+            onChange={(value) => setFormValue({ ...formValue, number: value })}
+            value={formValue.number}
+            options={timeOptions}
+          />
+
+          <label>Вид занятия</label>
+          <ControlledSelect
+            name={"type"}
+            onChange={(value) => setFormValue({ ...formValue, type: value })}
+            value={formValue.type}
+            options={typeOptions}
+          />
+
+          <label>Дисциплина</label>
+          <ControlledSelect
+            name={"discipline"}
+            onChange={(value) =>
+              setFormValue({ ...formValue, discipline: value })
             }
-          }}
-        >
-          Создать слот
-        </Button>
-        <Button
-          // очищаем форму и выходим из модалки
-          onClick={(e) => {
-            onCancel(e);
-            clearForm();
-          }}
-        >
-          Закрыть
-        </Button>
-      </div>
+            value={formValue.discipline}
+            options={disciplineOptions}
+          />
+
+          <div className={styles.buttons}>
+            <Button
+              // если ошибки не было, после добавления элемента очищаем форму и выходим из модалки
+              onClick={(e) => {
+                addNewSlot(e);
+                if (!isError) {
+                  onCancel(e);
+                  clearForm();
+                }
+              }}
+            >
+              Создать слот
+            </Button>
+            <Button
+              // очищаем форму и выходим из модалки
+              onClick={(e) => {
+                onCancel(e);
+                clearForm();
+              }}
+            >
+              Закрыть
+            </Button>
+          </div>
+        </>
+      )}
     </form>
   );
 };

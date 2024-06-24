@@ -3,8 +3,21 @@ export const dateOptions = {
   month: "long",
 };
 
-export const getDayWeek = (date) => {
+export const getDayWeekFormatted = (date) => {
   const days = ["Вc", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+  return days[date.getDay()];
+};
+
+export const getDayWeek = (date) => {
+  const days = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ];
   return days[date.getDay()];
 };
 

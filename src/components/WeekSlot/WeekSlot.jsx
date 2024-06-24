@@ -3,7 +3,12 @@ import styles from "./WeekSlot.module.css";
 import DaySlot from "../DaySlot/DaySlot";
 
 const WeekSlot = ({ week }) => {
-  if (week === undefined)
+  // если неделя пуста, отображаем сообщение
+  if (
+    week === undefined ||
+    Object.keys(week).length === 0 ||
+    week.dayslots.length === 0
+  )
     return <div className={styles.empty}>Неделя пуста!</div>;
   else
     return (
